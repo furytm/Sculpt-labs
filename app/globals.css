@@ -1,0 +1,80 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --color-background: #faf8f5;
+  --color-foreground: #2a2520;
+
+  --color-primary: #8b7b6f;
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: #c9bdb1;
+  --color-secondary-foreground: #2a2520;
+
+  --color-muted: #e8dfd5;
+  --color-muted-foreground: #6b6158;
+
+  --color-accent: #8fad6e;
+  --color-accent-foreground: #ffffff;
+
+  --color-border: #e0d5c8;
+}
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: #faf8f5;
+  --foreground: #2a2520;
+  --border: #e0d5c8;
+  --ring: #8b7b6f;
+}
+
+.dark {
+  --background: #1a1815;
+  --foreground: #f5f1ec;
+  --border: #3a3530;
+  --ring: #c9bdb1;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+    outline-color: var(--ring);
+  }
+body {
+  background-color: #faf8f5;
+  color: #2a2520 !important;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: Georgia, serif;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer components {
+  .glassmorphism {
+    background-color: rgb(255 255 255 / 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgb(255 255 255 / 0.2);
+    border-radius: 0.5rem;
+  }
+
+  .soft-shadow {
+    box-shadow: 0 10px 30px rgb(0 0 0 / 0.05);
+  }
+
+  .hero-text {
+    font-size: 3rem;
+    line-height: 1;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+  }
+}
