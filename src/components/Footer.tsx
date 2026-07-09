@@ -38,7 +38,7 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-3 mb-4">
               <div className="relative h-10 w-10">
                 <Image
-                  src="/logo.png"
+                  src="/logo.jpg"
                   alt="Sculpt LAB Logo"
                   fill
                   className="object-contain"

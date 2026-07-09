@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Check } from 'lucide-react'
 import Hero from '../Hero'
+import IconRenderer from '../IconRenderer'
 
 export default function BookPage() {
   const [step, setStep] = useState(1)
@@ -103,7 +104,7 @@ export default function BookPage() {
               ].map((option) => (
                 <motion.label
                   key={option.id}
-                  className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                  className={`p-4 rounded-lg border-2 cursor-pointer transition-all flex items-center ${
                     formData.classType === option.id
                       ? 'border-primary bg-primary/5'
                       : 'border-border hover:border-primary/30'
@@ -116,7 +117,9 @@ export default function BookPage() {
                     onChange={handleInputChange}
                     className="mr-3"
                   />
-                  <span className="text-2xl mr-2">{option.icon}</span>
+                  <div className="text-primary mr-2">
+                    <IconRenderer icon={option.icon} size={24} />
+                  </div>
                   <span className="font-medium text-primary">{option.label}</span>
                 </motion.label>
               ))}

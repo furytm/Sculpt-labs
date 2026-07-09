@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ChevronRight } from 'lucide-react'
 import Hero from '../Hero'
+import IconRenderer from '../IconRenderer'
 
 export default function AboutPage() {
   return (
@@ -109,7 +110,9 @@ export default function AboutPage() {
                 transition={{ delay: idx * 0.1 }}
                 className="glassmorphism p-8 text-center"
               >
-                <div className="text-5xl mb-4">{item.icon}</div>
+                <div className="flex justify-center mb-4 text-primary">
+                  <IconRenderer icon={item.icon} size={48} />
+                </div>
                 <h3 className="font-serif text-xl font-medium text-primary mb-3">
                   {item.title}
                 </h3>

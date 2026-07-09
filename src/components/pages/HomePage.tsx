@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ChevronRight, Sparkles } from 'lucide-react'
 import VideoHero from '../VideoHero'
+import IconRenderer from '../IconRenderer'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -25,31 +26,27 @@ const itemVariants = {
 export default function HomePage() {
   return (
     <div className="w-full">
-     {/* Video Hero - Mobile & Tablet */}
-<div className="lg:hidden h-screen">
-  
-  <VideoHero
-    title="Transform Your Body, Elevate Your Mind"
-    subtitle=""
-    videoSrc="/videos/pilates-studio.mp4"
-  >
-    <div className="flex flex-col gap-3 w-full px-6">
-      <Link
-        href="/book"
-        className="px-5 py-2.5 bg-primary text-primary-foreground font-sans text-sm font-medium rounded-full hover:bg-primary/90 transition-colors soft-shadow text-center"
-      >
-        Book Your Session
-      </Link>
-
-      <Link
-        href="/classes"
-        className="px-5 py-2.5 border border-white text-white font-sans text-sm font-medium rounded-full hover:bg-white/10 transition-colors text-center"
-      >
-        Explore Classes
-      </Link>
-    </div>
-  </VideoHero>
-</div>
+      {/* Video Hero - Visible on mobile and md */}
+      <div className="lg:hidden">
+        <VideoHero
+          title="Transform Your Body, Elevate Your Mind"
+          subtitle="Experience luxury pilates at Sculpt LAB. Our expert instructors guide you through transformative sessions that strengthen, lengthen, and empower your entire body."
+          videoSrc="/videos/pilates-studio.mp4"
+        >
+          <Link
+            href="/book"
+            className="px-6 py-3 bg-primary text-primary-foreground font-sans font-medium rounded-lg hover:bg-primary/90 transition-colors soft-shadow text-center"
+          >
+            Book Your Session
+          </Link>
+          <Link
+            href="/classes"
+            className="px-6 py-3 border-2 border-white text-white font-sans font-medium rounded-lg hover:bg-white/10 transition-colors text-center"
+          >
+            Explore Classes
+          </Link>
+        </VideoHero>
+      </div>
 
       {/* Desktop Hero Section with Content Overlay */}
       <section className="hidden lg:block relative w-full overflow-hidden mt-16 md:mt-20">
@@ -128,19 +125,19 @@ export default function HomePage() {
               {
                 title: 'Reformer Basics',
                 description: 'Perfect introduction to pilates on the reformer',
-                image: '/images/class-reformer.jpg',
+                image: '/images/stock-reformer-1.jpg',
                 icon: '🏋️',
               },
               {
                 title: 'Mat Pilates Flow',
                 description: 'Dynamic mat-based workout for core strength',
-                image: '/images/class-mat.jpg',
+                image: '/images/stock-mat-cords.jpg',
                 icon: '🧘',
               },
               {
                 title: 'Advanced Intensive',
                 description: 'Challenge yourself with our expert-level sessions',
-                image: '/images/class-advanced.jpg',
+                image: '/images/stock-reformer-modern.jpg',
                 icon: '✨',
               },
             ].map((classItem, idx) => (
@@ -258,7 +255,9 @@ export default function HomePage() {
                     viewport={{ once: true }}
                     transition={{ delay: idx * 0.1 }}
                   >
-                    <div className="text-3xl shrink-0">{feature.icon}</div>
+                    <div className="shrink-0 text-primary">
+                      <IconRenderer icon={feature.icon} size={32} />
+                    </div>
                     <div>
                       <h3 className="font-serif text-lg font-medium text-primary mb-1">
                         {feature.title}

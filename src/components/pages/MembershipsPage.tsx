@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Check } from 'lucide-react'
 import Hero from '../Hero'
+import IconRenderer from '../IconRenderer'
 
 export default function MembershipsPage() {
   const memberships = [
@@ -67,7 +68,7 @@ export default function MembershipsPage() {
       <Hero
         title="Memberships"
         subtitle="Choose a membership that fits your pilates lifestyle"
-        imageSrc="/images/hero-memberships.jpg"
+        imageSrc="/images/stock-mat-group.jpg"
         imageAlt="Pilates studio community"
       />
 
@@ -243,7 +244,9 @@ export default function MembershipsPage() {
                 transition={{ delay: idx * 0.1 }}
                 className="glassmorphism p-6 text-center"
               >
-                <div className="text-4xl mb-3">{perk.icon}</div>
+                <div className="flex justify-center mb-3 text-primary">
+                  <IconRenderer icon={perk.icon} size={40} />
+                </div>
                 <h3 className="font-serif font-medium text-primary mb-2">
                   {perk.title}
                 </h3>

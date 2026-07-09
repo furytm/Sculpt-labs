@@ -13,28 +13,28 @@ export default function PrivateSessionsPage() {
       duration: '50 min',
       description: 'Completely personalized session on the reformer tailored to your goals',
       benefits: ['Custom Program', 'Full Attention', 'Flexible Timing', 'Video Analysis'],
-      image: '/images/private-reformer.jpg',
+      image: '/images/stock-reformer-1.jpg',
     },
     {
       title: 'One-on-One Mat',
       duration: '60 min',
       description: 'Intimate mat pilates session with focused instruction',
       benefits: ['Body-Specific Work', 'Injury Modification', 'Progression Tracking', 'Home Exercises'],
-      image: '/images/private-mat.jpg',
+      image: '/images/stock-mat-assist.jpg',
     },
     {
       title: 'Couples Session',
       duration: '60 min',
       description: 'Partner up for a fun and motivating pilates experience',
       benefits: ['Shared Goals', 'Motivation Boost', 'Quality Time', 'Partner Support'],
-      image: '/images/private-couples.jpg',
+      image: '/images/stock-reformer-assist.jpg',
     },
     {
       title: 'Small Group Training',
       duration: '45 min',
       description: 'Specialized training in groups of 2-4 people',
       benefits: ['Personalized Attention', 'Group Energy', 'Customized Programs', 'Social Connection'],
-      image: '/images/private-group.jpg',
+      image: '/images/stock-mat-group.jpg',
     },
   ]
 
@@ -44,7 +44,7 @@ export default function PrivateSessionsPage() {
       <Hero
         title="Private Sessions"
         subtitle="Experience pilates at its most personalized with expert instruction tailored to your unique goals"
-        imageSrc="/images/hero-private.jpg"
+        imageSrc="/images/stock-reformer-assist.jpg"
         imageAlt="Private pilates session"
       />
 
@@ -64,7 +64,7 @@ export default function PrivateSessionsPage() {
             >
               <div className="relative h-96 md:h-[450px] rounded-2xl overflow-hidden soft-shadow">
                 <Image
-                  src="/images/private-instructor.jpg"
+                  src="/images/stock-reformer-2.jpg"
                   alt="Private Session"
                   fill
                   className="object-cover"
