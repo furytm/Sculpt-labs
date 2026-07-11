@@ -23,7 +23,7 @@ export default function VideoHero({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="relative w-full min-h-96 md:min-h-[500px] flex items-center justify-center overflow-hidden mt-16 md:mt-20 py-16 md:py-24"
+    className="relative w-full h-screen flex items-center justify-center overflow-hidden"
     >
       {/* Background Video */}
       <video
@@ -47,7 +47,7 @@ export default function VideoHero({
         transition={{ duration: 0.8, delay: 0.2 }}
         className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-3xl"
       >
-        <h1 className="hero-text text-white mb-4 text-balance">
+<h1 className="text-5xl md:text-6xl font-serif font-medium leading-tight text-white mb-4">
           {title}
         </h1>
         {subtitle && (
