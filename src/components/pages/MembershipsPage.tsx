@@ -6,61 +6,20 @@ import { motion } from 'framer-motion'
 import { Check } from 'lucide-react'
 import Hero from '../Hero'
 import IconRenderer from '../IconRenderer'
+import { memberships, formatPrice } from '@/lib/data/memberships'
 
 export default function MembershipsPage() {
-  const memberships = [
-    {
-      name: 'Starter',
-      price: '$79',
-      period: '/month',
-      description: 'Perfect for exploring pilates',
-      classes: 4,
-      features: [
-        '4 classes per month',
-        'Access to all class types',
-        'Member community',
-        'Email support',
-      ],
-      cta: 'Get Started',
-      highlighted: false,
-    },
-    {
-      name: 'Practitioner',
-      price: '$129',
-      period: '/month',
-      description: 'For committed practitioners',
-      classes: 8,
-      features: [
-        '8 classes per month',
-        'Unlimited class swaps',
-        'Priority booking',
-        '10% off private sessions',
-        'Monthly wellness workshop',
-        'Priority support',
-      ],
-      cta: 'Join Now',
-      highlighted: true,
-    },
-    {
-      name: 'Unlimited',
-      price: '$189',
-      period: '/month',
-      description: 'Total transformation',
-      classes: 'Unlimited',
-      features: [
-        'Unlimited classes',
-        'Free private sessions (1/month)',
-        'Priority booking',
-        '20% off additional private sessions',
-        'Monthly wellness workshop',
-        'Exclusive member events',
-        '24/7 studio access',
-        'Dedicated support',
-      ],
-      cta: 'Get Unlimited',
-      highlighted: false,
-    },
-  ]
+  const membershipPlans = memberships.map((plan) => ({
+    name: plan.name,
+    price: formatPrice(plan.priceNGN),
+    period: plan.period,
+    description: plan.description,
+    classes: plan.classLimit || 'Unlimited',
+    features: plan.features,
+    cta: plan.highlighted ? 'Join Now' : 'Get Started',
+    highlighted: plan.highlighted || false,
+    id: plan.id,
+  }))
 
   return (
     <div className="w-full">
@@ -68,8 +27,8 @@ export default function MembershipsPage() {
       <Hero
         title="Memberships"
         subtitle="Choose a membership that fits your pilates lifestyle"
-        imageSrc="/images/stock-mat-group.jpg"
-        imageAlt="Pilates studio community"
+        imageSrc="/images/membership-hero-pilates.png"
+        imageAlt="Diverse group of pilates practitioners on reformers"
       />
 
       {/* Memberships Cards */}
@@ -81,7 +40,7 @@ export default function MembershipsPage() {
             viewport={{ once: true }}
             className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto"
           >
-            {memberships.map((plan, idx) => (
+            {membershipPlans.map((plan, idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 20 }}
