@@ -21,6 +21,7 @@ export default function Header() {
   const navLinks = [
     { href: '/about', label: 'About Us' },
     { href: '/classes', label: 'Classes' },
+    { href: '/schedule', label: 'Schedule' },
     { href: '/memberships', label: 'Memberships' },
     { href: '/private-sessions', label: 'Private Sessions' },
     { href: '/book', label: 'Book Now' },

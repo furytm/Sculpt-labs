@@ -5,64 +5,18 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Clock, Users, Zap } from 'lucide-react'
 import VideoHero from '../VideoHero'
+import { classes } from '@/lib/data/classes'
 
 export default function ClassesPage() {
-  const classes = [
-    {
-      title: 'Reformer Basics',
-      duration: '50 min',
-      level: 'Beginner',
-      description: 'Perfect introduction to pilates on the reformer. Learn fundamental movements and build your foundation.',
-      image: '/images/stock-reformer-1.jpg',
-      features: ['Core Strengthening', 'Flexibility', 'Machine Basics'],
-      color: 'from-primary/20 to-primary/5',
-    },
-    {
-      title: 'Mat Pilates Flow',
-      duration: '60 min',
-      level: 'Intermediate',
-      description: 'Dynamic mat-based workout combining flowing movements with controlled breathing for full-body engagement.',
-      image: '/images/stock-mat-cords.jpg',
-      features: ['Full Body Workout', 'Flexibility', 'Endurance'],
-      color: 'from-accent/20 to-accent/5',
-    },
-    {
-      title: 'Advanced Intensive',
-      duration: '55 min',
-      level: 'Advanced',
-      description: 'Challenge yourself with our expert-level sessions designed for experienced practitioners.',
-      image: '/images/stock-reformer-modern.jpg',
-      features: ['Power Training', 'Complex Sequences', 'Peak Performance'],
-      color: 'from-secondary/20 to-secondary/5',
-    },
-    {
-      title: 'Power Reformer',
-      duration: '50 min',
-      level: 'Intermediate-Advanced',
-      description: 'High-intensity reformer class focusing on strength building and muscle toning.',
-      image: '/images/stock-reformer-class.jpg',
-      features: ['Strength Building', 'Muscle Toning', 'Cardio Element'],
-      color: 'from-primary/20 to-primary/5',
-    },
-    {
-      title: 'Prenatal Pilates',
-      duration: '45 min',
-      level: 'All Levels',
-      description: 'Specially designed for expecting mothers to maintain strength and prepare for birth.',
-      image: '/images/stock-reformer-3.jpg',
-      features: ['Safe Pregnancy', 'Core Support', 'Pain Relief'],
-      color: 'from-accent/20 to-accent/5',
-    },
-    {
-      title: 'Therapeutic Pilates',
-      duration: '50 min',
-      level: 'All Levels',
-      description: 'Gentle restorative pilates designed for injury recovery and rehabilitation.',
-      image: '/images/stock-reformer-stretch.jpg',
-      features: ['Injury Recovery', 'Mobility', 'Flexibility'],
-      color: 'from-secondary/20 to-secondary/5',
-    },
-  ]
+  const classItems = classes.map((cls) => ({
+    title: cls.name,
+    duration: `${cls.duration} min`,
+    level: cls.level,
+    description: cls.description,
+    image: cls.image,
+    features: cls.features,
+    color: cls.color,
+  }))
 
   return (
     <div className="w-full">
@@ -82,7 +36,9 @@ export default function ClassesPage() {
             viewport={{ once: true }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
-            {classes.map((classItem, idx) => (
+            {classItems.map((classItem, idx) => {
+              const classId = classes[idx].id
+              return (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 20 }}
@@ -137,14 +93,15 @@ export default function ClassesPage() {
                   </div>
 
                   <Link
-                    href="/book"
+                    href={`/book?classId=${classId}`}
                     className="inline-block w-full text-center px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
                   >
                     Book Class
                   </Link>
                 </div>
               </motion.div>
-            ))}
+            )
+            })}
           </motion.div>
         </div>
       </section>

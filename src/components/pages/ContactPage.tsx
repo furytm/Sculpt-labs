@@ -76,9 +76,9 @@ export default function ContactPage() {
                   <p className="body-text text-sm text-foreground/70">
                     123 Wellness Avenue
                     <br />
-                    Suite 500
+                    Surulere
                     <br />
-                    Los Angeles, CA 90001
+                    Lagos, NG 90001
                   </p>
                 </div>
               </div>
@@ -102,7 +102,7 @@ export default function ContactPage() {
                     href="tel:+13105551234"
                     className="body-text text-sm text-foreground/70 hover:text-primary transition-colors"
                   >
-                    +1 (310) 555-1234
+                    +234 (810) 555-1234
                   </a>
                 </div>
               </div>
@@ -126,7 +126,7 @@ export default function ContactPage() {
                     href="mailto:hello@sculptlab.com"
                     className="body-text text-sm text-foreground/70 hover:text-primary transition-colors"
                   >
-                    hello@sculptlab.com
+                    contact@sculptlab.com
                   </a>
                 </div>
               </div>

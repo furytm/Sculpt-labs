@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ChevronRight, Sparkles } from 'lucide-react'
 import VideoHero from '../VideoHero'
+import IconRenderer from '../IconRenderer'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -128,19 +129,19 @@ export default function HomePage() {
               {
                 title: 'Reformer Basics',
                 description: 'Perfect introduction to pilates on the reformer',
-                image: '/images/class-reformer.jpg',
+                image: '/images/stock-reformer-1.jpg',
                 icon: '🏋️',
               },
               {
                 title: 'Mat Pilates Flow',
                 description: 'Dynamic mat-based workout for core strength',
-                image: '/images/class-mat.jpg',
+                image: '/images/stock-mat-cords.jpg',
                 icon: '🧘',
               },
               {
                 title: 'Advanced Intensive',
                 description: 'Challenge yourself with our expert-level sessions',
-                image: '/images/class-advanced.jpg',
+                image: '/images/stock-reformer-modern.jpg',
                 icon: '✨',
               },
             ].map((classItem, idx) => (
@@ -191,7 +192,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Why Choose Us Section */}
+    {/* Why Choose Us Section */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -258,7 +259,9 @@ export default function HomePage() {
                     viewport={{ once: true }}
                     transition={{ delay: idx * 0.1 }}
                   >
-                    <div className="text-3xl shrink-0">{feature.icon}</div>
+                    <div className="shrink-0 text-primary">
+                      <IconRenderer icon={feature.icon} size={32} />
+                    </div>
                     <div>
                       <h3 className="font-serif text-lg font-medium text-primary mb-1">
                         {feature.title}
