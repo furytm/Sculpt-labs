@@ -6,21 +6,58 @@ import { motion } from 'framer-motion'
 import { Check } from 'lucide-react'
 import Hero from '../Hero'
 import IconRenderer from '../IconRenderer'
-import { memberships, formatPrice } from '@/lib/data/memberships'
+import { useEffect, useState } from "react";
+import { getMemberships, formatPrice, Membership } from "@/lib/data/membershipmain";
 
 export default function MembershipsPage() {
-  const membershipPlans = memberships.map((plan) => ({
+ 
+  const [memberships, setMemberships] = useState<Membership[]>([]);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState("");
+ const membershipPlans = memberships.map((plan) => ({
     name: plan.name,
-    price: formatPrice(plan.priceNGN),
+  price: formatPrice(plan.price),
     period: plan.period,
     description: plan.description,
-    classes: plan.classLimit || 'Unlimited',
+
     features: plan.features,
     cta: plan.highlighted ? 'Join Now' : 'Get Started',
     highlighted: plan.highlighted || false,
     id: plan.id,
+    classes: plan.classLimit ?? "Unlimited",
   }))
 
+  useEffect(() => {
+  async function loadMemberships() {
+    try {
+      const data = await getMemberships();
+      setMemberships(data);
+    } catch (err) {
+      console.error(err);
+      setError("Unable to load memberships.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  loadMemberships();
+}, []);
+
+if (loading) {
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      Loading memberships...
+    </div>
+  );
+}
+
+if (error) {
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      {error}
+    </div>
+  );
+}
   return (
     <div className="w-full">
       {/* Hero Section */}
@@ -80,8 +117,7 @@ export default function MembershipsPage() {
                     </p>
                   </div>
 
-                  <Link
-                    href="/book"
+                <Link href={`/book?membershipId=${plan.id}`}
                     className={`block w-full text-center px-6 py-3 font-sans font-medium rounded-lg transition-colors mb-8 ${
                       plan.highlighted
                         ? 'bg-primary text-primary-foreground hover:bg-primary/90'
@@ -232,8 +268,8 @@ export default function MembershipsPage() {
             <p className="body-text text-lg text-foreground/70 mb-8">
               Choose the membership that fits your lifestyle
             </p>
-            <Link
-              href="/book"
+       <Link
+  href="/book"
               className="inline-block px-8 py-3 bg-primary text-primary-foreground font-sans font-medium rounded-lg hover:bg-primary/90 transition-colors soft-shadow"
             >
               Choose Your Plan

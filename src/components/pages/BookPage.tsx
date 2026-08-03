@@ -6,21 +6,27 @@ import { motion } from 'framer-motion'
 import { Check, ArrowRight } from 'lucide-react'
 import Hero from '../Hero'
 import { classes } from '@/lib/data/classes'
-import { memberships } from '@/lib/data/memberships'
-import { getScheduleForDate, getAvailableTimes, getSessionByDateAndTime } from '@/lib/data/schedule'
+import { getAvailableTimes, getSessionByDateAndTime } from '@/lib/data/schedule'
 import { getInstructorForTime } from '@/lib/data/instructors'
 import { validateVoucher } from '@/lib/data/vouchers'
-import { onProceedToPayment, BookingData } from '@/lib/api/paymentPlaceholder'
-import { sendBookingConfirmationEmail } from '@/lib/api/email'
+import { API_BASE_URL, createBooking } from '@/lib/api/booking'
+
+interface Membership {
+  id: string
+  name: string
+  priceNGN: number
+  classLimit?: number | null
+}
 
 export default function BookPage() {
   const searchParams = useSearchParams()
   const classIdParam = searchParams?.get('classId') || null
+  const membershipIdParam = searchParams?.get("membershipId") || "";
   
   const [step, setStep] = useState(classIdParam ? 2 : 1)
   const [formData, setFormData] = useState({
     classId: classIdParam || '',
-    membershipId: '',
+membershipId: membershipIdParam,
     name: '',
     email: '',
     phone: '',
@@ -28,10 +34,40 @@ export default function BookPage() {
     time: '',
     voucherCode: '',
   })
+  
 
   const [voucherValidation, setVoucherValidation] = useState<any>(null)
   const [isProcessing, setIsProcessing] = useState(false)
-  const [bookingReference, setBookingReference] = useState('')
+  const [memberships, setMemberships] = useState<Membership[]>([])
+  const [membershipsError, setMembershipsError] = useState('')
+
+  useEffect(() => {
+    const fetchMemberships = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/memberships`)
+        const result = await response.json()
+
+        if (!response.ok) {
+          throw new Error(result.message || 'Unable to load memberships.')
+        }
+const membershipData = result.data;
+
+        setMemberships(
+          membershipData.map((membership: any) => ({
+            ...membership,
+            id: membership.id || membership._id,
+          priceNGN: membership.price,
+      classLimit: membership.classLimit
+          }))
+        )
+      } catch (error) {
+        console.error('Unable to load memberships:', error)
+        setMembershipsError(error instanceof Error ? error.message : 'Unable to load memberships.')
+      }
+    }
+
+    fetchMemberships()
+  }, [])
 
 
 
@@ -79,82 +115,47 @@ export default function BookPage() {
   const { subtotal, discount, total } = calculateTotals()
 
   const handleProceedToPayment = async () => {
-    if (!selectedMembership || !selectedSession || !selectedInstructor) {
-      alert('Please complete all required fields')
-      return
-    }
+  if (
+  !selectedMembership ||
+  !selectedClass ||
+  !selectedSession ||
+  !selectedInstructor
+) {
+  alert("Please complete all required fields");
+  return;
+}
 
     setIsProcessing(true)
 
     try {
-      const bookingData: BookingData = {
-        id: '',
-        personalInfo: {
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-        },
-        membership: {
-          id: selectedMembership.id,
-          name: selectedMembership.name,
-          priceNGN: selectedMembership.priceNGN,
-        },
-        classSession: {
-          classId: selectedSession.classId,
-          className: selectedClass?.name || 'Unknown',
-          instructorId: selectedInstructor.id,
-          instructorName: selectedInstructor.name,
-          date: formData.date,
-          time: formData.time,
-          duration: selectedClass?.duration || 50,
-        },
-        voucher: voucherValidation?.valid
-          ? {
-              code: formData.voucherCode,
-              discount: voucherValidation.discount,
-            }
-          : undefined,
-        subtotal,
-        discount,
-        totalAmount: total,
-        timestamp: new Date().toISOString(),
-      }
+      const response = await createBooking({
+        fullName: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        membershipId: selectedMembership.id,
+        classId: selectedClass.id,
+        scheduleId: selectedSession.id,
+        bookingDate: formData.date,
+      })
+      const authorizationUrl = response.data.authorizationUrl;
+  
 
-      // Call placeholder payment
-      const paymentResponse = await onProceedToPayment(bookingData)
+if (response.success && authorizationUrl) {
+  const paymentWindow = window.open(
+    authorizationUrl,
+    "_blank",
+    "noopener,noreferrer"
+  );
 
-      if (paymentResponse.success && paymentResponse.bookingReference) {
-        setBookingReference(paymentResponse.bookingReference)
-
-        // Send confirmation email
-        await sendBookingConfirmationEmail(bookingData, paymentResponse.bookingReference)
-
-        setStep(6)
-      } else {
-        alert('Payment processing failed. Please try again.')
-      }
-    } catch (error) {
+  if (!paymentWindow) {
+    alert("Please allow popups to continue to payment.");
+  }
+}} catch (error) {
       console.error('Error:', error)
       alert('An error occurred. Please try again.')
     } finally {
       setIsProcessing(false)
     }
-  }
-
-  const handleBookAnother = () => {
-    setStep(classIdParam ? 2 : 1)
-    setFormData({
-      classId: classIdParam || '',
-      membershipId: '',
-      name: '',
-      email: '',
-      phone: '',
-      date: '',
-      time: '',
-      voucherCode: '',
-    })
-    setVoucherValidation(null)
-    setBookingReference('')
   }
 
   const availableTimes = formData.date ? getAvailableTimes(formData.date) : []
@@ -223,6 +224,7 @@ export default function BookPage() {
             <h2 className="font-serif text-2xl font-medium text-primary mb-6">Step 1: Select Membership / Package</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+              {membershipsError && <p className="text-sm text-destructive md:col-span-2">{membershipsError}</p>}
               {memberships.map((membership) => (
                 <motion.label
                   key={membership.id}
@@ -248,7 +250,7 @@ export default function BookPage() {
 
             <button
               onClick={handleNext}
-              disabled={!formData.membershipId}
+              disabled={!formData.membershipId || !!membershipsError}
               className="w-full px-6 py-3 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               Continue <ArrowRight className="w-4 h-4" />
@@ -545,74 +547,6 @@ export default function BookPage() {
           </div>
         </motion.div>
 
-        {/* Step 6: Payment Success */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: step === 6 ? 1 : 0, scale: step === 6 ? 1 : 0.95 }}
-          className={step === 6 ? 'block' : 'hidden'}
-        >
-          <div className="glassmorphism p-12 text-center">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: 'spring' }}
-              className="w-16 h-16 mx-auto mb-6 rounded-full bg-accent/20 flex items-center justify-center"
-            >
-              <Check className="w-8 h-8 text-accent" />
-            </motion.div>
-
-            <h2 className="font-serif text-3xl font-medium text-primary mb-3">Payment Successful!</h2>
-            <p className="body-text text-lg text-foreground/70 mb-8">Your booking has been confirmed.</p>
-
-            <div className="bg-muted/30 p-6 rounded-lg mb-8 text-left space-y-4">
-              <div>
-                <p className="text-sm text-foreground/60">Booking Reference</p>
-                <p className="font-serif text-lg font-medium text-primary">{bookingReference}</p>
-              </div>
-
-              <div>
-                <p className="text-sm text-foreground/60">Session Details</p>
-                <div className="space-y-1 text-sm">
-                  <p>
-                    <span className="font-medium">Class:</span> {selectedClass?.name}
-                  </p>
-                  <p>
-                    <span className="font-medium">Date:</span> {formData.date ? new Date(formData.date).toLocaleDateString() : 'N/A'}
-                  </p>
-                  <p>
-                    <span className="font-medium">Time:</span> {formData.time}
-                  </p>
-                  <p>
-                    <span className="font-medium">Instructor:</span> {selectedInstructor?.name}
-                  </p>
-                </div>
-              </div>
-
-              <div>
-                <p className="text-sm text-foreground/60">Payment Status</p>
-                <p className="font-serif font-medium text-accent">Confirmed</p>
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <button
-                onClick={() => {
-                  /* TODO: Implement download receipt */
-                  alert('Receipt download coming soon!')
-                }}
-                className="flex-1 px-6 py-3 border-2 border-primary text-primary font-medium rounded-lg hover:bg-primary/5 transition-colors"
-              >
-                Download Receipt
-              </button>
-              <button
-                onClick={handleBookAnother}
-                className="flex-1 px-6 py-3 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors"
-              >
-                Book Another Session
-              </button>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </div>
   )

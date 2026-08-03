@@ -79,6 +79,10 @@ export function getSessionByDateAndTime(date: string, time: string): ClassSessio
   return upcomingSchedule.find((s) => s.date === date && s.time === time)
 }
 
+
+export function getSessionById(id: string): ClassSession | undefined {
+  return upcomingSchedule.find((session) => session.id === id);
+}
 export function getNextAvailableDate(): string {
   const tomorrow = new Date()
   tomorrow.setDate(tomorrow.getDate() + 1)

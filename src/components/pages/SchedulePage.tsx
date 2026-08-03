@@ -11,6 +11,14 @@ import { upcomingSchedule, getScheduleForDate, getNextAvailableDate } from '@/li
 import { getInstructorById, getInstructorForTime } from '@/lib/data/instructors'
 import { getClassById } from '@/lib/data/classes'
 
+
+interface ScheduleSession {
+  id: string;
+  classId: string;
+  date: string;
+  time: string;
+  availableSlots: number;
+}
 export default function SchedulePage() {
   const [selectedDate, setSelectedDate] = useState<string>(getNextAvailableDate())
   const [displayWeek, setDisplayWeek] = useState<number>(0)
@@ -36,16 +44,18 @@ export default function SchedulePage() {
   const scheduleForDate = getScheduleForDate(selectedDate)
 
   // Group sessions by time
-  const sessionsByTime = scheduleForDate.reduce(
-    (acc: any, session) => {
-      if (!acc[session.time]) {
-        acc[session.time] = []
-      }
-      acc[session.time].push(session)
-      return acc
-    },
-    {}
-  )
+const sessionsByTime = scheduleForDate.reduce<Record<string, ScheduleSession[]>>(
+  (acc, session) => {
+    if (!acc[session.time]) {
+      acc[session.time] = [];
+    }
+
+    acc[session.time].push(session);
+
+    return acc;
+  },
+  {}
+);
 
   const sortedTimes = Object.keys(sessionsByTime).sort((a, b) => a.localeCompare(b))
 
@@ -132,10 +142,9 @@ export default function SchedulePage() {
                 <h4 className="font-serif text-lg font-medium text-primary mb-4">{time}</h4>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {sessionsByTime[time].map((session, idx) => {
-                    const classInfo = getClassById(session.classId)
-                    const instructor = getInstructorForTime(time)
-
+                {sessionsByTime[time].map((session, idx) => {
+  const classInfo = getClassById(session.classId);
+  const instructor = getInstructorForTime(time);
                     return (
                       <motion.div
                         key={session.id}

@@ -6,7 +6,7 @@
  * Ready to integrate with Resend, SendGrid, or other email services.
  */
 
-import { BookingData } from './paymentPlaceholder'
+import { BookingData } from './booking'
 
 export interface EmailResponse {
   success: boolean
