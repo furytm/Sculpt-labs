@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { ChevronRight, Sparkles } from 'lucide-react'
 import VideoHero from '../VideoHero'
 import IconRenderer from '../IconRenderer'
+import BookingNowTrigger from '../BookingNowTrigger'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -35,12 +36,7 @@ export default function HomePage() {
     videoSrc="/videos/pilates-studio.mp4"
   >
     <div className="flex flex-col gap-3 w-full px-6">
-      <Link
-        href="/book"
-        className="px-5 py-2.5 bg-primary text-primary-foreground font-sans text-sm font-medium rounded-full hover:bg-primary/90 transition-colors soft-shadow text-center"
-      >
-        Book Your Session
-      </Link>
+      <BookingNowTrigger className="px-5 py-2.5 bg-primary text-primary-foreground font-sans text-sm font-medium rounded-full hover:bg-primary/90 transition-colors soft-shadow text-center">Book Your Session</BookingNowTrigger>
 
       <Link
         href="/classes"
@@ -192,7 +188,29 @@ export default function HomePage() {
         </div>
       </section>
 
-    {/* Why Choose Us Section */}
+      {/* Private Sessions Preview */}
+      <section className="py-20 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div className="relative h-96 rounded-2xl overflow-hidden soft-shadow">
+              <Image src="/images/stock-reformer-2.jpg" alt="Personalized private Pilates session" fill className="object-cover" />
+            </div>
+            <div>
+              <p className="text-sm uppercase tracking-[0.24em] text-accent mb-3">Private Sessions</p>
+              <h2 className="section-title text-primary mb-5">Pilates, personalized to you</h2>
+              <p className="body-text text-lg text-foreground/70 mb-6">Experience Pilates at its most personalized with expert instruction tailored to your unique goals, body, and pace.</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+                {['Complete personalization', 'Expert form correction', 'Flexible scheduling', 'Customized progression'].map((benefit) => (
+                  <div key={benefit} className="flex items-center gap-2 text-sm text-foreground/75"><span className="text-accent">✓</span>{benefit}</div>
+                ))}
+              </div>
+              <Link href="/private-sessions" className="inline-flex items-center px-7 py-3 bg-primary text-primary-foreground font-sans font-medium rounded-lg hover:bg-primary/90 transition-colors soft-shadow">Explore Private Sessions<ChevronRight className="w-4 h-4 ml-2" /></Link>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Section */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div

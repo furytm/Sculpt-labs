@@ -146,9 +146,13 @@ export default function AboutPage() {
             viewport={{ once: true }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
-            {[1, 2, 3].map((idx) => (
+            {[
+              { name: 'Amara Okafor', image: '/images/instructor-amara.png', specialty: 'Reformer & mindful movement' },
+              { name: 'Chioma Adeyemi', image: '/images/instructor-chioma.png', specialty: 'Strength, mobility & alignment' },
+              { name: 'Zainab Bello', image: '/images/instructor-zainab.png', specialty: 'Mat Pilates & restorative flow' },
+            ].map((instructor, idx) => (
               <motion.div
-                key={idx}
+                key={instructor.name}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -157,17 +161,17 @@ export default function AboutPage() {
               >
                 <div className="relative h-80 mb-4 rounded-xl overflow-hidden soft-shadow">
                   <Image
-                    src={`/images/instructor-${idx}.jpg`}
-                    alt={`Instructor ${idx}`}
+                    src={instructor.image}
+                    alt={`${instructor.name}, Sculpt LAB Pilates instructor`}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
                 <h3 className="font-serif text-xl font-medium text-primary">
-                  Instructor {idx}
+                  {instructor.name}
                 </h3>
                 <p className="body-text text-sm text-foreground/70 mt-1">
-                  Certified Pilates Instructor
+                  Certified Pilates Instructor · {instructor.specialty}
                 </p>
                 <p className="body-text text-sm text-foreground/60 mt-2">
                   Specializing in reformer and mat pilates with a passion for holistic wellness.

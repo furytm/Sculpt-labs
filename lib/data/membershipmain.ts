@@ -1,4 +1,7 @@
-import { API_BASE_URL } from "../api/booking";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://sculpt-backend-6flc.onrender.com";
+
 
 export interface Membership {
   id: string;
@@ -24,9 +27,25 @@ interface GetMembershipsResponse {
 }
 
 export async function getMemberships(): Promise<Membership[]> {
-  const response = await fetch(`${API_BASE_URL}/api/memberships`);
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}/api/memberships`);
+  } catch {
+    throw new Error(
+      `Membership API is unreachable. Check your internet connection, Render service status, and CORS allowlist for ${process.env.NEXT_PUBLIC_API_URL || "https://sculpt-lab-booking-flow-1.v0.build"}.`,
+    );
+  }
 
-  const result: GetMembershipsResponse = await response.json();
+  const body = await response.text();
+
+  let result: GetMembershipsResponse;
+  try {
+    result = JSON.parse(body) as GetMembershipsResponse;
+  } catch {
+    throw new Error(
+      `Membership API returned ${response.status} ${response.statusText} instead of JSON. Check the backend URL and CORS configuration.`,
+    );
+  }
 
   if (!response.ok) {
     throw new Error(result.message || "Failed to load memberships");

@@ -3,278 +3,88 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Check } from 'lucide-react'
+import { ArrowUpRight, Check, Clock3, Infinity, Sparkles } from 'lucide-react'
 import Hero from '../Hero'
-import IconRenderer from '../IconRenderer'
-import { useEffect, useState } from "react";
-import { getMemberships, formatPrice, Membership } from "@/lib/data/membershipmain";
+import { useEffect, useState } from 'react'
+import { formatPrice, getMemberships, Membership } from '@/lib/data/membershipmain'
+
+const membershipImages: Record<string, string> = {
+  'intro-week': '/images/membership-intro-week.png',
+  'founding-member': '/images/membership-founding-member.png',
+  'single-class': '/images/membership-single-class.png',
+  'monthly-5': '/images/membership-monthly-5.png',
+  'monthly-10': '/images/membership-monthly-10.png',
+  'monthly-unlimited': '/images/membership-monthly-unlimited.png',
+  'quarterly-5': '/images/membership-quarterly-5.png',
+  'quarterly-10': '/images/membership-quarterly-10.png',
+  'quarterly-20': '/images/membership-quarterly-20.png',
+  'quarterly-48': '/images/membership-quarterly-48.png',
+  'annual-unlimited': '/images/membership-annual-unlimited.png',
+}
+
+const imageForPlan = (id: string) => membershipImages[id] || '/images/membership-monthly-unlimited.png'
+
+const isMonthly = (plan: Membership) => plan.period.includes('/month')
 
 export default function MembershipsPage() {
- 
-  const [memberships, setMemberships] = useState<Membership[]>([]);
-const [loading, setLoading] = useState(true);
-const [error, setError] = useState("");
- const membershipPlans = memberships.map((plan) => ({
-    name: plan.name,
-  price: formatPrice(plan.price),
-    period: plan.period,
-    description: plan.description,
-
-    features: plan.features,
-    cta: plan.highlighted ? 'Join Now' : 'Get Started',
-    highlighted: plan.highlighted || false,
-    id: plan.id,
-    classes: plan.classLimit ?? "Unlimited",
-  }))
+  const [memberships, setMemberships] = useState<Membership[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
-  async function loadMemberships() {
-    try {
-      const data = await getMemberships();
-      setMemberships(data);
-    } catch (err) {
-      console.error(err);
-      setError("Unable to load memberships.");
-    } finally {
-      setLoading(false);
-    }
-  }
+    getMemberships().then(setMemberships).catch(() => setError('Unable to load memberships. Please try again.')).finally(() => setLoading(false))
+  }, [])
 
-  loadMemberships();
-}, []);
+  if (loading) return <div className="flex min-h-screen items-center justify-center text-muted-foreground">Loading memberships...</div>
+  if (error) return <div className="flex min-h-screen items-center justify-center text-muted-foreground">{error}</div>
 
-if (loading) {
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      Loading memberships...
-    </div>
-  );
-}
+    <div className="w-full overflow-hidden">
+      <Hero title="Memberships" subtitle="Choose the rhythm that makes showing up feel effortless" imageSrc="/images/membership-monthly.png" imageAlt="Pilates studio with reformers" />
 
-if (error) {
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      {error}
-    </div>
-  );
-}
-  return (
-    <div className="w-full">
-      {/* Hero Section */}
-      <Hero
-        title="Memberships"
-        subtitle="Choose a membership that fits your pilates lifestyle"
-        imageSrc="/images/membership-hero-pilates.png"
-        imageAlt="Diverse group of pilates practitioners on reformers"
-      />
+      <section className="bg-muted/30 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+        <div className="mx-auto max-w-7xl">
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mx-auto mb-12 max-w-2xl text-center">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.24em] text-accent-foreground/70">Find your frequency</p>
+            <h2 className="section-title text-primary">A plan for every kind of commitment.</h2>
+            <p className="body-text mt-4 text-foreground/65">All memberships are presented with their billing terms before payment. No surprises at checkout.</p>
+          </motion.div>
 
-      {/* Memberships Cards */}
-      <section className="py-20 bg-muted/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto"
-          >
-            {membershipPlans.map((plan, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                className={`rounded-xl overflow-hidden transition-all duration-300 ${
-                  plan.highlighted
-                    ? 'md:scale-105 glassmorphism border-2 border-primary shadow-2xl'
-                    : 'glassmorphism'
-                }`}
-              >
-                {plan.highlighted && (
-                  <div className="bg-accent text-accent-foreground text-center py-2 text-sm font-medium">
-                    Most Popular
-                  </div>
-                )}
-
-                <div className="p-8">
-                  <h3 className="font-serif text-2xl font-medium text-primary mb-2">
-                    {plan.name}
-                  </h3>
-                  <p className="body-text text-sm text-foreground/60 mb-6">
-                    {plan.description}
-                  </p>
-
-                  <div className="mb-6">
-                    <span className="font-serif text-4xl font-medium text-primary">
-                      {plan.price}
-                    </span>
-                    <span className="text-foreground/60">{plan.period}</span>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {memberships.map((plan, idx) => {
+              const monthly = isMonthly(plan)
+              const intro = plan.id === 'intro-week'
+              const founding = plan.id === 'founding-member'
+              return (
+                <motion.article key={plan.id} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ delay: idx * 0.06, duration: 0.5 }} whileHover={{ y: -6 }} className={`group relative overflow-hidden rounded-2xl border bg-card shadow-sm transition-shadow hover:shadow-xl ${founding ? 'border-primary ring-2 ring-primary/15' : 'border-border'}`}>
+                  <div className="relative aspect-[4/2] overflow-hidden">
+                    <Image src={imageForPlan(plan.id)} alt={`${plan.name} membership`} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/10 to-transparent" />
+                    <div className="absolute bottom-4 left-5 right-5 flex items-end justify-between text-primary-foreground">
+                      <span className="text-xs font-semibold uppercase tracking-[0.18em]">{plan.badge || (monthly ? 'Monthly access' : 'Flexible access')}</span>
+                      {founding ? <Sparkles className="h-5 w-5" /> : intro ? <Clock3 className="h-5 w-5" /> : <Infinity className="h-5 w-5" />}
+                    </div>
                   </div>
 
-                  <div className="mb-8 p-4 bg-primary/5 rounded-lg">
-                    <p className="font-serif text-lg font-medium text-primary">
-                      {typeof plan.classes === 'number' ? `${plan.classes} Classes` : 'Unlimited'}
-                    </p>
+                  <div className="p-6 sm:p-7">
+                    <h3 className="font-serif text-2xl font-medium text-primary">{plan.name}</h3>
+                    <p className="body-text mt-2 min-h-12 text-sm text-foreground/60">{plan.description}</p>
+                    <div className="mt-5 flex items-baseline gap-2"><span className="font-serif text-4xl font-medium text-primary">{formatPrice(plan.price)}</span><span className="text-sm text-muted-foreground">{plan.period}</span></div>
+
+                    {(intro || founding || monthly) && <div className={`mt-5 rounded-lg border p-3 text-sm leading-5 ${founding ? 'border-primary/30 bg-primary/5 text-primary' : 'border-accent/30 bg-accent/10 text-foreground/75'}`}>
+                      <strong className="block font-semibold">{intro ? 'One time offer' : founding ? 'Limited to the first 20 members · Auto-renews monthly' : 'Auto-renews monthly'}</strong>
+                      <span>{intro ? 'This introductory purchase does not renew.' : 'Your subscription automatically renews each billing period until cancelled.'}</span>
+                    </div>}
+
+                    <Link href={`/book?membershipId=${plan.id}`} className={`mt-6 flex w-full items-center justify-center gap-2 rounded-lg px-5 py-3 font-medium transition-colors ${plan.highlighted ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'border border-primary text-primary hover:bg-primary/5'}`}>{plan.highlighted ? 'Join founding members' : 'Choose plan'}<ArrowUpRight className="h-4 w-4" /></Link>
+                    <div className="mt-7 space-y-3 border-t pt-6">{plan.features.map((feature) => <div key={feature} className="flex items-start gap-3 text-sm text-foreground/70"><Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" /><span>{feature}</span></div>)}</div>
                   </div>
+                </motion.article>
+              )
+            })}
+          </div>
 
-                <Link href={`/book?membershipId=${plan.id}`}
-                    className={`block w-full text-center px-6 py-3 font-sans font-medium rounded-lg transition-colors mb-8 ${
-                      plan.highlighted
-                        ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                        : 'border-2 border-primary text-primary hover:bg-primary/5'
-                    }`}
-                  >
-                    {plan.cta}
-                  </Link>
-
-                  <div className="space-y-3">
-                    {plan.features.map((feature, featureIdx) => (
-                      <motion.div
-                        key={featureIdx}
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: featureIdx * 0.05 }}
-                        className="flex gap-3 items-start"
-                      >
-                        <Check className="w-5 h-5 text-accent shrink-0 mt-0.5" />
-                        <span className="body-text text-sm text-foreground/70">
-                          {feature}
-                        </span>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="section-title text-primary mb-4">Frequently Asked Questions</h2>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="space-y-4"
-          >
-            {[
-              {
-                question: 'Can I pause my membership?',
-                answer: 'Yes, members can pause for up to 2 months per year.',
-              },
-              {
-                question: 'Do classes roll over each month?',
-                answer: 'Classes do not roll over, but you can book in advance.',
-              },
-              {
-                question: 'Can I upgrade or downgrade my plan?',
-                answer: 'You can change your plan anytime. Changes take effect on your next billing date.',
-              },
-              {
-                question: 'What if I need to cancel?',
-                answer: 'You can cancel anytime with a 7-day notice.',
-              },
-            ].map((faq, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.05 }}
-                className="glassmorphism p-6"
-              >
-                <h3 className="font-serif font-medium text-primary mb-2">
-                  {faq.question}
-                </h3>
-                <p className="body-text text-sm text-foreground/70">
-                  {faq.answer}
-                </p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Member Benefits */}
-      <section className="py-20 bg-muted/30">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="section-title text-primary mb-4">Member Perks</h2>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-          >
-            {[
-              { icon: '🎯', title: 'Goal Tracking', desc: 'Monitor your progress' },
-              { icon: '👥', title: 'Community', desc: 'Connect with members' },
-              { icon: '📱', title: 'Mobile App', desc: 'Book on the go' },
-              { icon: '🎁', title: 'Special Events', desc: 'Exclusive workshops' },
-            ].map((perk, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                className="glassmorphism p-6 text-center"
-              >
-                <div className="flex justify-center mb-3 text-primary">
-                  <IconRenderer icon={perk.icon} size={40} />
-                </div>
-                <h3 className="font-serif font-medium text-primary mb-2">
-                  {perk.title}
-                </h3>
-                <p className="body-text text-sm text-foreground/70">
-                  {perk.desc}
-                </p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-20">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="section-title text-primary mb-6">
-              Start Your Transformation Today
-            </h2>
-            <p className="body-text text-lg text-foreground/70 mb-8">
-              Choose the membership that fits your lifestyle
-            </p>
-       <Link
-  href="/book"
-              className="inline-block px-8 py-3 bg-primary text-primary-foreground font-sans font-medium rounded-lg hover:bg-primary/90 transition-colors soft-shadow"
-            >
-              Choose Your Plan
-            </Link>
-          </motion.div>
+          <p className="mx-auto mt-10 max-w-3xl text-center text-xs leading-5 text-muted-foreground">Payment disclaimer: monthly memberships, including Founding Member Unlimited, automatically renew each month unless cancelled according to the studio cancellation policy. The 1 Week Unlimited Intro Offer is a one time offer and does not auto-renew. Please review the terms above before paying.</p>
         </div>
       </section>
     </div>

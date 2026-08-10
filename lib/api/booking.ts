@@ -3,9 +3,6 @@ export interface CreateBookingRequest {
   email: string;
   phone: string;
   membershipId: string;
-  classId: string;
-  scheduleId: string;
-  bookingDate: string;
 }
 
 export interface BookingData {
@@ -64,7 +61,8 @@ export interface CreateBookingResponse {
 }
 
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL!;
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://sculpt-backend-6flc.onrender.com";
 
 export async function createBooking(
   data: CreateBookingRequest
@@ -77,7 +75,15 @@ export async function createBooking(
     body: JSON.stringify(data),
   });
 
-  const result: CreateBookingResponse = await response.json();
+  const body = await response.text();
+  let result: CreateBookingResponse;
+  try {
+    result = JSON.parse(body) as CreateBookingResponse;
+  } catch {
+    throw new Error(
+      `Booking API returned ${response.status} ${response.statusText} instead of JSON. Check the backend URL and CORS configuration.`,
+    );
+  }
 
   if (!response.ok) {
     throw new Error(result.message || "Failed to create booking");

@@ -37,13 +37,13 @@ export const memberships: Membership[] = [
     features: [
       'Unlimited classes',
       'Rate locked for life',
-      'Limited to first 30 members',
+      'Limited to first 20 members',
       'Auto-renewal',
       'Priority booking',
       'Exclusive founding member events',
     ],
     highlighted: true,
-    badge: 'Limited to 30',
+    badge: 'First 20 members',
   },
   {
     id: 'single-class',

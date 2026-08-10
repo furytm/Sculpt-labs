@@ -5,15 +5,14 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
+import BookingNowTrigger from './BookingNowTrigger'
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
-    }
+    const handleScroll = () => setIsScrolled(window.scrollY > 10)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
@@ -28,91 +27,70 @@ export default function Header() {
     { href: '/journal', label: 'Journal' },
   ]
 
+  const desktopLinkClass = 'font-sans text-sm tracking-wide text-foreground/70 hover:text-primary transition-colors relative group whitespace-nowrap'
+  const mobileLinkClass = 'font-sans text-sm px-3 py-2 text-foreground/70 hover:text-primary hover:bg-primary/5 rounded-md transition-colors'
+
   return (
     <motion.header
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled
-          ? 'bg-white/95 backdrop-blur-md border-b border-primary/10 shadow-lg shadow-black/5'
-          : 'bg-background/80 backdrop-blur-sm'
+      className={`fixed inset-x-0 top-0 z-50 border-b border-primary/10 transition-all duration-500 ${
+        isScrolled ? 'bg-white/95 shadow-lg shadow-black/5 backdrop-blur-md' : 'bg-background/95 backdrop-blur-sm'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo - Extreme Left */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-            className="relative h-16 w-16 md:h-24 md:w-24"
-            >
-              <Image
-                src="/logo.png"
-                alt="Sculpt LAB Logo"
-                fill
-                className="object-contain"
-                priority
-              />
+      <div className="mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
+        <div className="relative flex h-24 items-center justify-center md:h-20">
+          <Link href="/" aria-label="Sculpt LAB home" className="flex items-center">
+            <motion.div whileHover={{ scale: 1.05 }} className="relative h-28 w-28 md:h-20 md:w-20">
+              <Image src="/logo.png" alt="Sculpt LAB Logo" fill className="object-contain" priority />
             </motion.div>
-          
           </Link>
 
-          {/* Desktop Navigation - Hidden on mobile and tablet */}
-          <nav className="hidden lg:flex items-center gap-6 flex-1 justify-center mx-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="font-sans text-sm tracking-wide text-foreground/70 hover:text-primary transition-colors relative group whitespace-nowrap"
-              >
-                {link.label}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300" />
-              </Link>
-            ))}
-          </nav>
-
-          {/* Desktop CTA Button */}
-          <Link
-            href="/contact"
-            className="hidden lg:inline-block px-6 py-2 bg-primary text-primary-foreground font-sans text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors soft-shadow shrink-0"
-          >
-            Get Started
-          </Link>
-
-          {/* Mobile Menu Button */}
           <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-2 text-foreground hover:text-primary transition-colors"
+            type="button"
+            aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isMobileMenuOpen}
+            onClick={() => setIsMobileMenuOpen((open) => !open)}
+            className="absolute right-0 p-2 text-foreground transition-colors hover:text-primary lg:hidden"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
+
+        <nav className="hidden min-h-12 items-center justify-center gap-x-10 gap-y-3 pb-2 pt-0 lg:flex xl:gap-x-14" aria-label="Main navigation">
+          {navLinks.map((link) => link.label === 'Book Now' ? (
+            <BookingNowTrigger key={link.href} className={desktopLinkClass}>
+              {link.label}
+              <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
+            </BookingNowTrigger>
+          ) : (
+            <Link key={link.href} href={link.href} className={desktopLinkClass}>
+              {link.label}
+              <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
+            </Link>
+          ))}
+        </nav>
       </div>
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          className="lg:hidden bg-background border-b border-primary/10"
+          className="border-t border-primary/10 bg-background lg:hidden"
         >
-          <nav className="flex flex-col gap-1 px-4 py-4">
-            {navLinks.map((link) => (
-              <Link
+          <nav className="flex flex-col gap-1 px-4 py-4" aria-label="Mobile navigation">
+            {navLinks.map((link) => link.label === 'Book Now' ? (
+              <BookingNowTrigger
                 key={link.href}
-                href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="font-sans text-sm px-3 py-2 text-foreground/70 hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-              >
+                className={`${mobileLinkClass} text-left`}
+                onOpen={() => setIsMobileMenuOpen(false)}
+              />
+            ) : (
+              <Link key={link.href} href={link.href} onClick={() => setIsMobileMenuOpen(false)} className={mobileLinkClass}>
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/contact"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="font-sans text-sm px-3 py-2 mt-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-center"
-            >
+            <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="mt-2 rounded-lg bg-primary px-3 py-2 text-center font-sans text-sm text-primary-foreground transition-colors hover:bg-primary/90">
               Get Started
             </Link>
           </nav>
