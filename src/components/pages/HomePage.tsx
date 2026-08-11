@@ -81,12 +81,7 @@ export default function HomePage() {
                 Experience luxury pilates at Sculpt LAB. Our expert instructors guide you through transformative sessions that strengthen, lengthen, and empower your entire body.
               </motion.p>
               <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  href="/book"
-                  className="px-8 py-3 bg-primary text-primary-foreground font-sans font-medium rounded-lg hover:bg-primary/90 transition-colors soft-shadow text-center"
-                >
-                  Book Your Session
-                </Link>
+                <BookingNowTrigger className="px-8 py-3 bg-primary text-primary-foreground font-sans font-medium rounded-lg hover:bg-primary/90 transition-colors soft-shadow text-center">Book Your Session</BookingNowTrigger>
                 <Link
                   href="/classes"
                   className="px-8 py-3 border-2 border-primary text-white font-sans font-medium rounded-lg hover:bg-white/10 transition-colors text-center"
@@ -310,13 +305,10 @@ export default function HomePage() {
             <p className="body-text text-lg text-foreground/70 mb-8 max-w-2xl mx-auto">
               Join our community of pilates enthusiasts and experience the difference that expert instruction and luxury facilities can make.
             </p>
-            <Link
-              href="/book"
-              className="inline-flex items-center px-8 py-4 bg-primary text-primary-foreground font-sans font-medium rounded-lg hover:bg-primary/90 transition-colors soft-shadow text-lg"
-            >
+            <BookingNowTrigger className="inline-flex items-center px-8 py-4 bg-primary text-primary-foreground font-sans font-medium rounded-lg hover:bg-primary/90 transition-colors soft-shadow text-lg">
               <Sparkles className="w-5 h-5 mr-2" />
               Book Your First Session
-            </Link>
+            </BookingNowTrigger>
           </motion.div>
         </div>
       </section>

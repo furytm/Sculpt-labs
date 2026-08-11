@@ -22,7 +22,10 @@ const membershipImages: Record<string, string> = {
   'annual-unlimited': '/images/membership-annual-unlimited.png',
 }
 
-const imageForPlan = (id: string) => membershipImages[id] || '/images/membership-monthly-unlimited.png'
+const imageForPlan = (plan: Membership) => {
+  const key = plan.slug || plan.id
+  return membershipImages[key] || '/images/membership-monthly-unlimited.png'
+}
 
 const isMonthly = (plan: Membership) => plan.period.includes('/month')
 
@@ -58,7 +61,7 @@ export default function MembershipsPage() {
               return (
                 <motion.article key={plan.id} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ delay: idx * 0.06, duration: 0.5 }} whileHover={{ y: -6 }} className={`group relative overflow-hidden rounded-2xl border bg-card shadow-sm transition-shadow hover:shadow-xl ${founding ? 'border-primary ring-2 ring-primary/15' : 'border-border'}`}>
                   <div className="relative aspect-[4/2] overflow-hidden">
-                    <Image src={imageForPlan(plan.id)} alt={`${plan.name} membership`} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <Image src={imageForPlan(plan)} alt={`${plan.name} membership`} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
                     <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/10 to-transparent" />
                     <div className="absolute bottom-4 left-5 right-5 flex items-end justify-between text-primary-foreground">
                       <span className="text-xs font-semibold uppercase tracking-[0.18em]">{plan.badge || (monthly ? 'Monthly access' : 'Flexible access')}</span>
