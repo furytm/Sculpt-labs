@@ -74,11 +74,11 @@ export default function ContactPage() {
                     Studio Location
                   </h3>
                   <p className="body-text text-sm text-foreground/70">
-                   2ND Floor,New Wing, Oriental Hotel,3 
+                    123 Wellness Avenue
                     <br />
-                  Lekki-epe expy, Victoria Island, 
+                    Suite 500
                     <br />
-                    Lagos 106104, Lagos.
+                    Los Angeles, CA 90001
                   </p>
                 </div>
               </div>
@@ -279,7 +279,7 @@ export default function ContactPage() {
           <div className="text-center">
             <MapPin className="w-16 h-16 text-primary/30 mx-auto mb-4" />
             <p className="body-text text-foreground/50">
-             2ND Floor,New Wing, Oriental Hotel,3 Lekki-epe expy, Victoria Island, Lagos 106104, Lagos.
+              123 Wellness Avenue, Los Angeles, CA 90001
             </p>
           </div>
         </motion.div>

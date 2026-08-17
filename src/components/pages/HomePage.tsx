@@ -75,7 +75,7 @@ export default function HomePage() {
               className="max-w-2xl"
             >
               <motion.h1 variants={itemVariants} className="hero-text mb-6 text-white">
-                Transform Your Body, Elevate Your Mind
+              Move with intention, live with balance”
               </motion.h1>
               <motion.p variants={itemVariants} className="body-text text-lg text-white/80 mb-8">
                 Experience luxury pilates at Sculpt LAB. Our expert instructors guide you through transformative sessions that strengthen, lengthen, and empower your entire body.

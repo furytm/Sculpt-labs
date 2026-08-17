@@ -20,6 +20,7 @@ export default function Footer() {
     ],
     resources: [
       { label: 'Journal', href: '/journal' },
+      { label: 'Studio Guidelines', href: '/studio-guidelines' },
       { label: 'FAQ', href: '/contact' },
     ],
   }

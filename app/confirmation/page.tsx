@@ -12,6 +12,7 @@ import { API_BASE_URL } from '@/lib/api/booking'
 
 interface ConfirmationBooking {
   reference?: string
+  personalInfo?: { email?: string }
   paymentReference?: string
   id?: string
   membership?: { name?: string }
@@ -182,7 +183,7 @@ console.log("Resolved session:", session);
                   className="space-y-4"
                 >
                   <button
-                    onClick={() => router.push('/register')}
+                    onClick={() => router.push(`/register?email=${encodeURIComponent(booking?.personalInfo?.email || '')}&reference=${encodeURIComponent(booking?.reference || booking?.paymentReference || booking?.id || reference || '')}`)}
                     className="w-full px-6 py-3 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors"
                   >
                     Create an Account
