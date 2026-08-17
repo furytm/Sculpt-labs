@@ -31,7 +31,7 @@ export default function HomePage() {
 <div className="lg:hidden h-screen">
   
   <VideoHero
-    title="Transform Your Body, Elevate Your Mind"
+    title="   Move with intention, live with balance"
     subtitle=""
     videoSrc="/videos/pilates-studio.mp4"
   >
@@ -75,7 +75,7 @@ export default function HomePage() {
               className="max-w-2xl"
             >
               <motion.h1 variants={itemVariants} className="hero-text mb-6 text-white">
-              Move with intention, live with balance”
+              Move with intention, live with balance
               </motion.h1>
               <motion.p variants={itemVariants} className="body-text text-lg text-white/80 mb-8">
                 Experience luxury pilates at Sculpt LAB. Our expert instructors guide you through transformative sessions that strengthen, lengthen, and empower your entire body.
