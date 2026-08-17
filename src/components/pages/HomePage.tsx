@@ -31,7 +31,7 @@ export default function HomePage() {
 <div className="lg:hidden h-screen">
   
   <VideoHero
-    title="   Move with intention, live with balance"
+    title="   Move with intention, Live with balance"
     subtitle=""
     videoSrc="/videos/pilates-studio.mp4"
   >
