@@ -123,10 +123,10 @@ export default function ContactPage() {
                     Email
                   </h3>
                   <a
-                    href="mailto:hello@sculptlab.com"
+                    href="mailto:enquiries@sculptlab.com.ng"
                     className="body-text text-sm text-foreground/70 hover:text-primary transition-colors"
                   >
-                    hello@sculptlab.com
+                    enquiries@sculptlab.com.ng
                   </a>
                 </div>
               </div>

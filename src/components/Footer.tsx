@@ -3,9 +3,14 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { usePathname } from 'next/navigation'
+import { Mail } from 'lucide-react'
 
 export default function Footer() {
+  const pathname = usePathname()
   const currentYear = new Date().getFullYear()
+
+  if (pathname === '/waitlist') return null
 
   const links = {
     studio: [
@@ -50,6 +55,7 @@ export default function Footer() {
             <p className="text-sm opacity-80 leading-relaxed">
               Transform your body and mind through the power of pilates. Experience luxury wellness.
             </p>
+            <a href="mailto:enquiries@sculptlab.com.ng" className="mt-5 flex items-center gap-2 text-sm opacity-80 transition-opacity hover:opacity-100"><Mail className="h-4 w-4" /> enquiries@sculptlab.com.ng</a>
           </motion.div>
 
           {/* Links */}

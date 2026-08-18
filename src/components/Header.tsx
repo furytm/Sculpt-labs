@@ -3,12 +3,16 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import BookingChoiceModal from './BookingChoiceModal'
 
 export default function Header() {
+  const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
+
+  if (pathname === '/waitlist') return null
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false)
 
