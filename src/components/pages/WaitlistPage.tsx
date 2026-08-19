@@ -58,21 +58,59 @@ export default function WaitlistPage() {
 
   return (
     <div className="min-h-screen overflow-hidden bg-background text-foreground">
-    <header className="mx-auto flex max-w-7xl items-center justify-center px-6 py-4 lg:px-10 lg:py-5">
-  <a
-    href="#top"
-    className="flex items-center gap-3"
-    aria-label="Sculpt Lab waitlist home"
-  >
-    <Image
-      src="/logo.png"
-      alt="Sculpt Lab"
-      width={80}
-      height={80}
-      className="h-16 w-16 object-contain sm:h-18 sm:w-18"
-      priority
-    />
-  </a>
+ <header className="overflow-hidden border-y border-border bg-foreground text-background py-3">
+  <div className="relative flex overflow-hidden whitespace-nowrap">
+    <motion.div
+      className="flex shrink-0 items-center"
+      animate={{ x: ["-50%", "0%"] }}
+      transition={{
+        duration: 18,
+        repeat: Infinity,
+        ease: "linear",
+      }}
+    >
+      <div className="flex items-center">
+        <span className="mx-6 text-xs font-medium uppercase tracking-[0.28em] text-primary-foreground">
+          Get ready, Lagos
+        </span>
+
+        <span className="text-primary-foreground/50">✦</span>
+
+        <span className="mx-6 text-xs font-medium uppercase tracking-[0.28em] text-primary-foreground">
+          The new Pilates experience is coming
+        </span>
+
+        <span className="text-primary-foreground/50">✦</span>
+
+        <span className="mx-6 text-xs font-medium uppercase tracking-[0.28em] text-primary-foreground">
+          Join the waitlist
+        </span>
+
+        <span className="text-primary-foreground/50">✦</span>
+      </div>
+
+      {/* Duplicate for seamless loop */}
+      <div className="flex items-center">
+        <span className="mx-6 text-xs font-medium uppercase tracking-[0.28em] text-primary-foreground">
+          Get ready, Lagos
+        </span>
+
+        <span className="text-primary-foreground/50">✦</span>
+
+        <span className="mx-6 text-xs font-medium uppercase tracking-[0.28em] text-primary-foreground">
+          The new Pilates experience is coming
+        </span>
+
+        <span className="text-primary-foreground/50">✦</span>
+
+        <span className="mx-6 text-xs font-medium uppercase tracking-[0.28em] text-primary-foreground">
+          Join the waitlist
+        </span>
+
+        <span className="text-primary-foreground/50">✦</span>
+      </div>
+    </motion.div>
+  </div>
 </header>
 
       <main id="top">
@@ -117,17 +155,20 @@ export default function WaitlistPage() {
         Opening soon in Lagos
       </p>
 
-      <h1
-        className="
-          max-w-3xl font-serif
-          text-6xl leading-[0.9]
-          tracking-[-0.045em]
-          sm:text-8xl
-          lg:text-[8.5rem]
-        "
-      >
-        Move with <em className="text-primary">intention.</em>
-      </h1>
+     <h1
+  className="
+    max-w-3xl font-serif
+    text-6xl leading-[0.88]
+    tracking-[-0.045em]
+    sm:text-8xl
+    lg:text-[8rem]
+  "
+>
+  Lagos,{" "}
+  <em className="text-primary">
+    get ready.
+  </em>
+</h1>
 
       <p
         className="
@@ -137,8 +178,9 @@ export default function WaitlistPage() {
           sm:text-lg
         "
       >
-        A considered reformer Pilates studio for stronger bodies,
-        quieter minds, and a community that makes showing up feel good.
+A new reformer Pilates experience is coming to Lagos.
+Be first in line for founding-member access, launch offers,
+and opening news.
       </p>
 
       <a
@@ -153,7 +195,7 @@ export default function WaitlistPage() {
           hover:-translate-y-0.5
         "
       >
-        <span>Join the waitlist</span>
+        <span>Get on the list</span>
 
         <motion.span
           animate={{
