@@ -23,11 +23,17 @@ type FormState = Record<string, string>
 
 const reveal = { hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0 } }
 
+
 export default function WaitlistPage() {
-  const [form, setForm] = useState<FormState>({})
-  const [submitted, setSubmitted] = useState(false)
-  const [error, setError] = useState('')
-  const [whatsappOpen, setWhatsappOpen] = useState(false)
+const [form, setForm] = useState<FormState>({})
+const [submitted, setSubmitted] = useState(false)
+const [error, setError] = useState('')
+const [isSubmitting, setIsSubmitting] = useState(false)
+const [toast, setToast] = useState<{
+  type: 'loading' | 'success' | 'error'
+  message: string
+} | null>(null)
+const [whatsappOpen, setWhatsappOpen] = useState(false)
 
   function openWhatsApp(question: string) {
     const message = question === 'Other'
@@ -41,23 +47,190 @@ export default function WaitlistPage() {
     setForm((current) => ({ ...current, [name]: value }))
     setError('')
   }
+async function submit(event: FormEvent<HTMLFormElement>) {
+  event.preventDefault()
 
-  function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const required = ['fullName', 'whatsapp', 'email', 'experience', 'attendance', 'frequency', 'sessionType', 'benefit']
-    if (required.some((key) => !form[key]?.trim())) {
-      setError('Please complete the required fields so we can save your place.')
-      return
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      setError('Please enter a valid email address.')
-      return
-    }
-    setSubmitted(true)
+  const required = [
+    'fullName',
+    'whatsapp',
+    'email',
+    'experience',
+    'attendance',
+    'frequency',
+    'sessionType',
+    'benefit',
+  ]
+
+  if (required.some((key) => !form[key]?.trim())) {
+    setError('Please complete the required fields so we can save your place.')
+
+    setToast({
+      type: 'error',
+      message: 'Please complete all required fields.',
+    })
+
+    setTimeout(() => {
+      setToast(null)
+    }, 3500)
+
+    return
   }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    setError('Please enter a valid email address.')
+
+    setToast({
+      type: 'error',
+      message: 'Please enter a valid email address.',
+    })
+
+    setTimeout(() => {
+      setToast(null)
+    }, 3500)
+
+    return
+  }
+
+  setError('')
+  setIsSubmitting(true)
+
+  setToast({
+    type: 'loading',
+    message: 'Saving your spot...',
+  })
+
+  try {
+    const payload = {
+      access_key: '89c7a85f-8cb7-498c-bfec-bb755d87d54b',
+      subject: 'New Sculpt Lab Waitlist Signup',
+
+      fullName: form.fullName,
+      whatsapp: form.whatsapp,
+      email: form.email,
+
+      experience: form.experience,
+      attendance: form.attendance,
+      frequency: form.frequency,
+      sessionType: form.sessionType,
+      benefit: form.benefit,
+      notes: form.notes || '',
+    }
+
+    const response = await fetch(
+      'https://api.web3forms.com/submit',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(payload),
+      }
+    )
+
+    const result = await response.json()
+
+    if (!response.ok || !result.success) {
+      throw new Error(
+        result.message || 'Something went wrong. Please try again.'
+      )
+    }
+
+    setSubmitted(true)
+
+    setToast({
+      type: 'success',
+      message: "You're on the Sculpt Lab waitlist!",
+    })
+
+    setForm({})
+
+    setTimeout(() => {
+      setToast(null)
+    }, 5000)
+  } catch (submitError) {
+    console.error('Waitlist submission error:', submitError)
+
+    setError(
+      'We could not save your place right now. Please try again.'
+    )
+
+    setToast({
+      type: 'error',
+      message: 'Something went wrong. Please try again.',
+    })
+
+    setTimeout(() => {
+      setToast(null)
+    }, 4000)
+  } finally {
+    setIsSubmitting(false)
+  }
+}
 
   return (
     <div className="min-h-screen overflow-hidden bg-background text-foreground">
+
+
+
+    {/* TOAST */}
+    {toast && (
+      <motion.div
+        initial={{ opacity: 0, y: -20, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: -20, scale: 0.96 }}
+        className="fixed right-5 top-5 z-[100] w-[calc(100%-2.5rem)] max-w-sm"
+      >
+        <div
+          className={`
+            flex items-center gap-4 rounded-2xl
+            border border-border
+            bg-card/95 p-4
+            shadow-[0_20px_60px_hsl(var(--foreground)/.15)]
+            backdrop-blur-xl
+          `}
+        >
+          {/* ICON */}
+          <span
+            className={`
+              flex h-10 w-10 shrink-0 items-center justify-center
+              rounded-full
+              ${
+                toast.type === 'success'
+                  ? 'bg-accent text-accent-foreground'
+                  : toast.type === 'error'
+                    ? 'bg-destructive text-destructive-foreground'
+                    : 'bg-primary/10 text-primary'
+              }
+            `}
+          >
+            {toast.type === 'loading' ? (
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+            ) : (
+              <Check className="h-4 w-4" />
+            )}
+          </span>
+
+          {/* MESSAGE */}
+          <div className="min-w-0">
+            <p className="font-serif text-lg">
+              {toast.type === 'success'
+                ? 'Welcome to Sculpt Lab.'
+                : toast.type === 'loading'
+                  ? 'Almost there...'
+                  : 'Something went wrong.'}
+            </p>
+
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              {toast.message}
+            </p>
+          </div>
+        </div>
+      </motion.div>
+    )}
+
+    {/* HEADER */}
+  
  <header className="overflow-hidden border-y border-border bg-foreground text-background py-3">
   <div className="relative flex overflow-hidden whitespace-nowrap">
     <motion.div
@@ -260,7 +433,35 @@ and opening news.
 
         <section id="waitlist" className="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[.75fr_1.25fr] lg:px-10 lg:py-28">
           <div className="lg:sticky lg:top-10 lg:self-start"><p className="text-xs uppercase tracking-[.25em] text-primary">First access</p><h2 className="mt-4 font-serif text-5xl leading-none">Save your spot.</h2><p className="mt-6 max-w-sm leading-7 text-muted-foreground">Leave your details and we&apos;ll be in touch with opening news, founding offers, and a first look at the studio.</p><div className="mt-10 flex items-center gap-4 text-sm text-muted-foreground"><Mail className="h-4 w-4 text-primary" /> enquiries@sculptlab.com.ng</div></div>
-          {submitted ? <motion.div initial={{ opacity: 0, scale: .98 }} animate={{ opacity: 1, scale: 1 }} className="flex min-h-[520px] flex-col items-center justify-center border border-border bg-secondary/20 p-8 text-center"><span className="flex h-14 w-14 items-center justify-center rounded-full bg-accent text-accent-foreground"><Check className="h-6 w-6" /></span><h3 className="mt-6 font-serif text-4xl">You&apos;re on the list.</h3><p className="mt-3 max-w-sm leading-7 text-muted-foreground">We&apos;ll keep you close and share the next chapter as soon as it&apos;s ready.</p></motion.div> : <form onSubmit={submit} className="rounded-[2rem] border border-border bg-card p-5 shadow-[0_18px_60px_hsl(var(--foreground)/.08)] sm:p-8 lg:p-10" noValidate><div className="mb-8 flex items-start justify-between gap-6 border-b border-border pb-6"><div><p className="text-xs font-medium uppercase tracking-[.22em] text-primary">Your details</p><h3 className="mt-2 font-serif text-3xl">Save your place</h3></div><span className="rounded-full bg-primary/10 px-3 py-1 text-xs text-primary">8 quick questions</span></div><div className="grid gap-6 sm:grid-cols-2">{fields.map((field) => <label key={field.name} className="sm:col-span-1"><span className="text-sm">{field.label} <span className="text-primary" aria-hidden="true">*</span></span><input required={field.required} type={field.type} value={form[field.name] ?? ''} onChange={(e) => update(field.name, e.target.value)} className="mt-2 w-full rounded-xl border border-border bg-background/70 px-4 py-3 text-base outline-none transition-all placeholder:text-muted-foreground/60 focus:border-primary focus:bg-background focus:ring-4 focus:ring-primary/10" /></label>)}<SelectField name="experience" label="Reformer experience" options={options.experience} value={form.experience} update={update} /><SelectField name="attendance" label="Likely attendance time" options={options.attendance} value={form.attendance} update={update} /><SelectField name="frequency" label="Ideal frequency" options={options.frequency} value={form.frequency} update={update} /><SelectField name="sessionType" label="Session type" options={options.sessionType} value={form.sessionType} update={update} /><SelectField name="benefit" label="What would you love from joining early?" options={options.benefit} value={form.benefit} update={update} /><label className="sm:col-span-2"><span className="text-sm">Anything else you&apos;d like us to know?</span><textarea rows={3} value={form.notes ?? ''} onChange={(e) => update('notes', e.target.value)} className="mt-2 w-full resize-none border-0 border-b border-border bg-transparent px-0 py-3 text-base outline-none transition-colors focus:border-primary focus:ring-0" /></label></div>{error && <p role="alert" className="mt-6 text-sm text-primary">{error}</p>}<button type="submit" className="mt-9 inline-flex items-center gap-3 rounded-full bg-primary px-7 py-3 text-sm text-primary-foreground transition-transform hover:-translate-y-0.5">Reserve my place <ArrowUpRight className="h-4 w-4" /></button><p className="mt-4 text-xs leading-5 text-muted-foreground">By joining, you agree to receive occasional studio updates. No noise, ever.</p></form>}
+          {submitted ? <motion.div initial={{ opacity: 0, scale: .98 }} animate={{ opacity: 1, scale: 1 }} className="flex min-h-[520px] flex-col items-center justify-center border border-border bg-secondary/20 p-8 text-center"><span className="flex h-14 w-14 items-center justify-center rounded-full bg-accent text-accent-foreground"><Check className="h-6 w-6" /></span><h3 className="mt-6 font-serif text-4xl">You&apos;re on the list.</h3><p className="mt-3 max-w-sm leading-7 text-muted-foreground">      Welcome to the beginning of something beautiful.
+      We&apos;ll be in touch with opening news, founding-member access,
+      and your first look at Sculpt Lab.</p></motion.div> : <form onSubmit={submit} className="rounded-[2rem] border border-border bg-card p-5 shadow-[0_18px_60px_hsl(var(--foreground)/.08)] sm:p-8 lg:p-10" noValidate><div className="mb-8 flex items-start justify-between gap-6 border-b border-border pb-6"><div><p className="text-xs font-medium uppercase tracking-[.22em] text-primary">Your details</p><h3 className="mt-2 font-serif text-3xl">Save your place</h3></div><span className="rounded-full bg-primary/10 px-3 py-1 text-xs text-primary">8 quick questions</span></div><div className="grid gap-6 sm:grid-cols-2">{fields.map((field) => <label key={field.name} className="sm:col-span-1"><span className="text-sm">{field.label} <span className="text-primary" aria-hidden="true">*</span></span><input required={field.required} type={field.type} value={form[field.name] ?? ''} onChange={(e) => update(field.name, e.target.value)} className="mt-2 w-full rounded-xl border border-border bg-background/70 px-4 py-3 text-base outline-none transition-all placeholder:text-muted-foreground/60 focus:border-primary focus:bg-background focus:ring-4 focus:ring-primary/10" /></label>)}<SelectField name="experience" label="Reformer experience" options={options.experience} value={form.experience} update={update} /><SelectField name="attendance" label="Likely attendance time" options={options.attendance} value={form.attendance} update={update} /><SelectField name="frequency" label="Ideal frequency" options={options.frequency} value={form.frequency} update={update} /><SelectField name="sessionType" label="Session type" options={options.sessionType} value={form.sessionType} update={update} /><SelectField name="benefit" label="What would you love from joining early?" options={options.benefit} value={form.benefit} update={update} /><label className="sm:col-span-2"><span className="text-sm">Anything else you&apos;d like us to know?</span><textarea rows={3} value={form.notes ?? ''} onChange={(e) => update('notes', e.target.value)} className="mt-2 w-full resize-none border-0 border-b border-border bg-transparent px-0 py-3 text-base outline-none transition-colors focus:border-primary focus:ring-0" /></label></div>{error && <p role="alert" className="mt-6 text-sm text-primary">{error}</p>}<button
+  type="submit"
+  disabled={isSubmitting}
+  className="
+    mt-9 inline-flex items-center gap-3
+    rounded-full bg-primary
+    px-7 py-3
+    text-sm text-primary-foreground
+    transition-all
+    hover:-translate-y-0.5
+    disabled:cursor-not-allowed
+    disabled:opacity-60
+    disabled:hover:translate-y-0
+  "
+>
+  {isSubmitting ? (
+    <>
+      <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground" />
+      Saving your spot...
+    </>
+  ) : (
+    <>
+      Get on the list
+      <ArrowUpRight className="h-4 w-4" />
+    </>
+  )}
+</button><p className="mt-4 text-xs leading-5 text-muted-foreground">By joining, you agree to receive occasional studio updates. No noise, ever.</p></form>}
         </section>
 
         <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-10 lg:pb-28">
