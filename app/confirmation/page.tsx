@@ -5,51 +5,32 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Check } from 'lucide-react'
 import Hero from '@/src/components/Hero'
-import { getClassById } from "@/lib/data/classes";
-import { getInstructorById } from "@/lib/data/instructors";
-import { getSessionById } from "@/lib/data/schedule";
 import { API_BASE_URL } from '@/lib/api/booking'
 
 interface ConfirmationBooking {
-  reference?: string
-  personalInfo?: { email?: string }
-  paymentReference?: string
   id?: string
-  membership?: { name?: string }
-  membershipName?: string
-  class?: { name?: string; instructor?: { name?: string } }
-  className?: string
-  instructor?: { name?: string }
-  instructorName?: string
-  schedule?: { date?: string; time?: string; startTime?: string; instructor?: { name?: string } }
-  bookingDate?: string
-  date?: string
-  bookingTime?: string
-  time?: string
+  fullName?: string
+  email?: string
+  phone?: string
+  paymentReference?: string
+  amount?: number
   paymentStatus?: string
-}
-
-interface ConfirmationBooking {
-  id?: string;
-
-  classId?: string;
-  scheduleId?: string;
-
-  paymentReference?: string;
-  bookingDate?: string;
-
   membership?: {
-    name?: string;
-  };
-
-  paymentStatus?: string;
+    name?: string
+    price?: number
+    type?: string
+  }
 }
 
 function ConfirmationContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
+
   const reference = searchParams.get('reference')
-  const [booking, setBooking] = useState<ConfirmationBooking | null>(null)
+
+  const [booking, setBooking] =
+    useState<ConfirmationBooking | null>(null)
+
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
 
@@ -62,17 +43,33 @@ function ConfirmationContent() {
       }
 
       try {
-        const response = await fetch(`${API_BASE_URL}/api/bookings/confirmation/${encodeURIComponent(reference)}`)
+        const response = await fetch(
+          `${API_BASE_URL}/api/bookings/confirmation/${encodeURIComponent(
+            reference
+          )}`
+        )
+
         const result = await response.json()
 
         if (!response.ok) {
-          throw new Error(result.message || 'Unable to load your booking confirmation.')
+          throw new Error(
+            result.message ||
+              'Unable to load your payment confirmation.'
+          )
         }
 
         setBooking(result.data.booking)
       } catch (fetchError) {
-        console.error('Unable to load booking confirmation:', fetchError)
-        setError(fetchError instanceof Error ? fetchError.message : 'Unable to load your booking confirmation.')
+        console.error(
+          'Unable to load payment confirmation:',
+          fetchError
+        )
+
+        setError(
+          fetchError instanceof Error
+            ? fetchError.message
+            : 'Unable to load your payment confirmation.'
+        )
       } finally {
         setIsLoading(false)
       }
@@ -81,85 +78,133 @@ function ConfirmationContent() {
     fetchConfirmation()
   }, [reference])
 
-  const bookingDate = booking?.bookingDate || booking?.schedule?.date || booking?.date
-  const classInfo = booking?.classId
-  ? getClassById(booking.classId)
-  : undefined;
+  const bookingReference =
+    booking?.paymentReference ||
+    booking?.id ||
+    reference ||
+    ''
 
-const session = booking?.scheduleId
-  ? getSessionById(booking.scheduleId)
-  : undefined;
+  const email = booking?.email || ''
 
-const instructor = session
-  ? getInstructorById(session.instructorId)
-  : undefined;
-  console.log("Booking scheduleId:", booking?.scheduleId);
-console.log("Resolved session:", session);
-  const bookingTime = booking?.bookingTime || booking?.schedule?.time || booking?.schedule?.startTime || booking?.time
-  const instructorName = booking?.instructorName || booking?.instructor?.name || booking?.schedule?.instructor?.name || booking?.class?.instructor?.name
+  const amount =
+    typeof booking?.amount === 'number'
+      ? booking.amount
+      : booking?.membership?.price
 
   return (
     <div className="w-full min-h-screen">
       <Hero
-        title="Book Your Session"
-        subtitle="Reserve your perfect pilates class in 7 simple steps"
+        title="Welcome to Sculpt Lab"
+        subtitle="Your Pilates journey starts here"
         imageSrc="/images/hero-book.jpg"
-        imageAlt="Book a pilates session"
+        imageAlt="Sculpt Lab Pilates studio"
       />
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
-          <div className="glassmorphism p-12 text-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+        >
+          <div className="glassmorphism p-8 sm:p-12 text-center">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: 'spring' }}
+              transition={{
+                delay: 0.2,
+                type: 'spring',
+              }}
               className="w-16 h-16 mx-auto mb-6 rounded-full bg-accent/20 flex items-center justify-center"
             >
               <Check className="w-8 h-8 text-accent" />
             </motion.div>
 
-            <h2 className="font-serif text-3xl font-medium text-primary mb-2">Payment Successful!</h2>
-            <p className="body-text text-lg text-foreground/70 mb-8">Your booking has been confirmed.</p>
+            <h2 className="font-serif text-3xl font-medium text-primary mb-2">
+              Payment Successful!
+            </h2>
+
+            <p className="body-text text-lg text-foreground/70 mb-8">
+              Your Sculpt Lab membership has been purchased successfully.
+            </p>
 
             {isLoading ? (
-              <p className="body-text text-foreground/70">Loading your booking confirmation...</p>
+              <p className="body-text text-foreground/70">
+                Loading your payment confirmation...
+              </p>
             ) : error ? (
-              <p className="body-text text-destructive">{error}</p>
+              <p className="body-text text-destructive">
+                {error}
+              </p>
             ) : (
               <>
                 <div className="bg-muted/30 p-6 rounded-lg mb-8 text-left space-y-4">
                   <div>
-                    <p className="text-sm text-foreground/60 mb-1">Booking Reference</p>
-                    <p className="font-serif text-2xl font-medium text-primary">
-                      {booking?.reference || booking?.paymentReference || booking?.id}
+                    <p className="text-sm text-foreground/60 mb-1">
+                      Payment Reference
+                    </p>
+
+                    <p className="font-serif text-xl sm:text-2xl font-medium text-primary break-all">
+                      {bookingReference}
                     </p>
                   </div>
 
-                  <div className="pt-4 border-t border-foreground/10">
-                    <p className="text-sm text-foreground/60 mb-3">Session Details</p>
-                    <div className="space-y-2 text-sm">
-                      <p>
-                        <span className="font-medium text-foreground">Membership:</span>{' '}
-                        <span className="text-foreground/70">{booking?.membership?.name}</span>
+                  <div className="pt-4 border-t border-foreground/10 space-y-3">
+                    <div>
+                      <p className="text-sm text-foreground/60">
+                        Membership
                       </p>
-                      <p>
-                        <span className="font-medium text-foreground">Class:</span>{' '}
-                        <span className="text-foreground/70">{classInfo?.name}</span>
+
+                      <p className="font-medium text-foreground">
+                        {booking?.membership?.name || 'Membership'}
                       </p>
-                      <p>
-                        <span className="font-medium text-foreground">Instructor:</span>{' '}
-                        <span className="text-foreground/70">{instructor?.name}</span>
+                    </div>
+
+                    {booking?.membership?.type && (
+                      <div>
+                        <p className="text-sm text-foreground/60">
+                          Type
+                        </p>
+
+                        <p className="font-medium text-foreground">
+                          {booking.membership.type === 'PRIVATE'
+                            ? 'Private Session'
+                            : 'Group Classes'}
+                        </p>
+                      </div>
+                    )}
+
+                    {typeof amount === 'number' && (
+                      <div>
+                        <p className="text-sm text-foreground/60">
+                          Amount Paid
+                        </p>
+
+                        <p className="font-medium text-foreground">
+                          ₦{amount.toLocaleString()}
+                        </p>
+                      </div>
+                    )}
+
+                    {email && (
+                      <div>
+                        <p className="text-sm text-foreground/60">
+                          Email
+                        </p>
+
+                        <p className="font-medium text-foreground break-all">
+                          {email}
+                        </p>
+                      </div>
+                    )}
+
+                    <div>
+                      <p className="text-sm text-foreground/60">
+                        Payment Status
                       </p>
-                      <p>
-                        <span className="font-medium text-foreground">Date:</span>{' '}
-                        <span className="text-foreground/70">
-                          {bookingDate ? new Date(bookingDate).toLocaleDateString() : ''}
-                        </span>
-                      </p>
-                      <p>
-                        <span className="font-medium text-foreground">Time:</span>{' '}
-                        <span className="text-foreground/70">{session?.time}</span>
+
+                      <p className="font-medium text-accent">
+                        {booking?.paymentStatus === 'PAID'
+                          ? 'Paid'
+                          : booking?.paymentStatus || 'Processing'}
                       </p>
                     </div>
                   </div>
@@ -172,7 +217,10 @@ console.log("Resolved session:", session);
                   className="mb-10 text-center"
                 >
                   <p className="body-text text-foreground/80 leading-relaxed max-w-md mx-auto">
-                    We&apos;ve reserved your class successfully. Create an account to manage your bookings, reschedule sessions, view your payment history, receive membership benefits, and enjoy a personalized experience.
+                    Your membership is ready. Create an account to
+                    manage your membership, choose your classes,
+                    book sessions, view your payment history, and
+                    enjoy your Sculpt Lab experience.
                   </p>
                 </motion.div>
 
@@ -183,16 +231,39 @@ console.log("Resolved session:", session);
                   className="space-y-4"
                 >
                   <button
-                    onClick={() => router.push(`/register?email=${encodeURIComponent(booking?.personalInfo?.email || '')}&reference=${encodeURIComponent(booking?.reference || booking?.paymentReference || booking?.id || reference || '')}`)}
+                    onClick={() =>
+                      router.push(
+                        `/register?email=${encodeURIComponent(
+                          email
+                        )}&reference=${encodeURIComponent(
+                          bookingReference
+                        )}`
+                      )
+                    }
                     className="w-full px-6 py-3 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors"
                   >
                     Create an Account
                   </button>
 
+                  <button
+                    onClick={() =>
+                      router.push(
+                        `/login?email=${encodeURIComponent(email)}`
+                      )
+                    }
+                    className="w-full px-6 py-3 border-2 border-primary text-primary font-medium rounded-lg hover:bg-primary/5 transition-colors"
+                  >
+                    I Already Have an Account
+                  </button>
+
                   <div className="flex items-center gap-4 my-6">
-                    <div className="flex-1 h-px bg-foreground/20"></div>
-                    <span className="text-xs text-foreground/50 uppercase tracking-wider font-medium">Or</span>
-                    <div className="flex-1 h-px bg-foreground/20"></div>
+                    <div className="flex-1 h-px bg-foreground/20" />
+
+                    <span className="text-xs text-foreground/50 uppercase tracking-wider font-medium">
+                      Or
+                    </span>
+
+                    <div className="flex-1 h-px bg-foreground/20" />
                   </div>
 
                   <button
@@ -213,7 +284,13 @@ console.log("Resolved session:", session);
 
 export default function ConfirmationPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          Loading...
+        </div>
+      }
+    >
       <ConfirmationContent />
     </Suspense>
   )
