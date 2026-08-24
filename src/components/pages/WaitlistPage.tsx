@@ -146,6 +146,28 @@ export default function WaitlistPage() {
         )
       }
 
+
+         await fetch(
+  'https://hook.eu1.make.com/ufxgi1ybgbmptbzdey546o0z5vo28xo2', 
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      fullName: form.fullName,
+      whatsapp: form.whatsapp,
+      email: form.email,
+      experience: form.experience,
+      attendance: form.attendance,
+      frequency: form.frequency,
+      sessionType: form.sessionType,
+      benefit: form.benefit,
+      notes: form.notes || '',
+      submittedAt: new Date().toISOString(),
+    }),
+  }
+)
     setSubmitted(true)
 
 setToast({
@@ -169,6 +191,8 @@ setForm({})
         type: 'error',
         message: 'Something went wrong. Please try again.',
       })
+
+   
 
       setTimeout(() => {
         setToast(null)
