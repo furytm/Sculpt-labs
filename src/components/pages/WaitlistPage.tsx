@@ -5,6 +5,12 @@ import Image from 'next/image'
 import { FormEvent, useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowDown, ArrowUpRight, Check, Clock3, Instagram, Mail, Sparkles } from 'lucide-react'
+import Link from 'next/link'
+
+
+
+import { Menu, X } from 'lucide-react'
+
 
 const fields = [
   { name: 'fullName', label: 'Full name', type: 'text', required: true },
@@ -264,39 +270,88 @@ export default function WaitlistPage() {
 
       {/* HEADER */}
 
-      <header className="overflow-hidden border-y border-border bg-foreground text-background py-3">
-       <div className="relative flex overflow-hidden whitespace-nowrap">
-  <motion.div
-    className="flex shrink-0 items-center"
-    animate={{ x: ["-50%", "0%"] }}
-    transition={{
-      duration: 18,
-      repeat: Infinity,
-      ease: "linear",
-    }}
-  >
-    <div className="flex items-center">
-      <span className="mx-4 text-[9px] font-medium uppercase tracking-[0.2em] text-primary-foreground sm:text-[10px] sm:tracking-[0.24em] lg:mx-6 lg:text-xs lg:tracking-[0.28em]">
-        Get ready, Lagos
-      </span>
+<header className="overflow-hidden border-y border-border bg-foreground text-background py-3">
+  <div className="flex items-center">
 
-      <span className="text-primary-foreground/50">✦</span>
-
-      <span className="mx-4 text-[9px] font-medium uppercase tracking-[0.2em] text-primary-foreground sm:text-[10px] sm:tracking-[0.24em] lg:mx-6 lg:text-xs lg:tracking-[0.28em]">
-        The new Pilates experience is coming
-      </span>
-
-      <span className="text-primary-foreground/50">✦</span>
-
-      <span className="mx-4 text-[9px] font-medium uppercase tracking-[0.2em] text-primary-foreground sm:text-[10px] sm:tracking-[0.24em] lg:mx-6 lg:text-xs lg:tracking-[0.28em]">
-        Join the waitlist
-      </span>
-
-      <span className="text-primary-foreground/50">✦</span>
+    {/* FIXED LOGO */}
+    <div className="relative flex h-16 w-16 shrink-0 items-center justify-center md:h-20 md:w-20">
+      <Link
+        href="/"
+        aria-label="Sculpt LAB home"
+        className="flex items-center"
+      >
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          className="relative h-14 w-14 md:h-18 md:w-18"
+        >
+          <Image
+            src="/logo.png"
+            alt="Sculpt LAB Logo"
+            fill
+            className="object-contain"
+            priority
+          />
+        </motion.div>
+      </Link>
     </div>
-  </motion.div>
-</div>
-      </header>
+
+    {/* SCROLLING ANNOUNCEMENT */}
+    <div className="relative flex-1 overflow-hidden whitespace-nowrap">
+      <motion.div
+        className="flex w-max items-center"
+        animate={{ x: ["0%", "-50%"] }}
+        transition={{
+          duration: 18,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+      >
+        {/* FIRST COPY */}
+        <div className="flex items-center">
+          <span className="mx-4 text-[9px] font-medium uppercase tracking-[0.2em] text-primary-foreground sm:text-[10px] sm:tracking-[0.24em] lg:mx-6 lg:text-xs lg:tracking-[0.28em]">
+            Get ready, Lagos
+          </span>
+
+          <span className="text-primary-foreground/50">✦</span>
+
+          <span className="mx-4 text-[9px] font-medium uppercase tracking-[0.2em] text-primary-foreground sm:text-[10px] sm:tracking-[0.24em] lg:mx-6 lg:text-xs lg:tracking-[0.28em]">
+            The new Pilates experience is coming
+          </span>
+
+          <span className="text-primary-foreground/50">✦</span>
+
+          <span className="mx-4 text-[9px] font-medium uppercase tracking-[0.2em] text-primary-foreground sm:text-[10px] sm:tracking-[0.24em] lg:mx-6 lg:text-xs lg:tracking-[0.28em]">
+            Join the waitlist
+          </span>
+
+          <span className="text-primary-foreground/50">✦</span>
+        </div>
+
+        {/* SECOND COPY FOR SEAMLESS LOOP */}
+        <div className="flex items-center">
+          <span className="mx-4 text-[9px] font-medium uppercase tracking-[0.2em] text-primary-foreground sm:text-[10px] sm:tracking-[0.24em] lg:mx-6 lg:text-xs lg:tracking-[0.28em]">
+            Get ready, Lagos
+          </span>
+
+          <span className="text-primary-foreground/50">✦</span>
+
+          <span className="mx-4 text-[9px] font-medium uppercase tracking-[0.2em] text-primary-foreground sm:text-[10px] sm:tracking-[0.24em] lg:mx-6 lg:text-xs lg:tracking-[0.28em]">
+            The new Pilates experience is coming
+          </span>
+
+          <span className="text-primary-foreground/50">✦</span>
+
+          <span className="mx-4 text-[9px] font-medium uppercase tracking-[0.2em] text-primary-foreground sm:text-[10px] sm:tracking-[0.24em] lg:mx-6 lg:text-xs lg:tracking-[0.28em]">
+            Join the waitlist
+          </span>
+
+          <span className="text-primary-foreground/50">✦</span>
+        </div>
+      </motion.div>
+    </div>
+
+  </div>
+</header>
 
       <main id="top">
 
@@ -309,7 +364,7 @@ export default function WaitlistPage() {
       bg-[url('/waitlist-meditation.jpg')]
       bg-cover bg-center
       after:absolute after:inset-0
-      after:bg-background/65
+  after:bg-black/40
 
       lg:grid-cols-[1.05fr_.95fr]
       lg:items-center
@@ -331,18 +386,18 @@ export default function WaitlistPage() {
           >
             <p
               className="
-          mb-7 flex items-center gap-3
+          mb-7 flex items-center gap-3 text-white
           text-xs font-medium uppercase
           tracking-[0.28em] text-primary
         "
             >
-              <span className="h-px w-10 bg-primary" />
+              <span className="h-px w-10 bg-primary " />
               Opening soon in Lagos
             </p>
 
             <h1
               className="
-    max-w-3xl font-serif
+    max-w-3xl font-serif     text-white
     text-6xl leading-[0.88]
     tracking-[-0.045em]
     sm:text-8xl
@@ -350,7 +405,7 @@ export default function WaitlistPage() {
   "
             >
               Lagos,{" "}
-              <em className="text-primary">
+              <em className="text-white">
                 get ready.
               </em>
             </h1>
@@ -358,7 +413,7 @@ export default function WaitlistPage() {
             <p
               className="
           mt-8 max-w-xl
-          text-base leading-7
+          text-white leading-7
           text-muted-foreground
           sm:text-lg
         "

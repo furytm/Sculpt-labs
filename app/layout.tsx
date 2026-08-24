@@ -41,11 +41,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`bg-background scroll-smooth ${cormorant.variable} ${inter.variable}`}>
       <body className="font-sans antialiased bg-background text-foreground">
-        <Header />
+        {/* <Header /> */}
         <main>
           {children}
         </main>
-        <Footer />
+        {/* <Footer /> */}
         {process.env.NODE_ENV === 'production' && <Analytics />}
         
       </body>
