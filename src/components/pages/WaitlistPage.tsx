@@ -38,18 +38,18 @@ export default function WaitlistPage() {
   const [whatsappOpen, setWhatsappOpen] = useState(false)
 
   useEffect(() => {
-  if (submitted && successRef.current) {
-    successRef.current.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-    })
-  }
-}, [submitted])
+    if (submitted && successRef.current) {
+      successRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      })
+    }
+  }, [submitted])
   function openWhatsApp(question: string) {
     const message = question === 'Other'
       ? 'Hi Sculpt Lab, I have another question about joining the waitlist.'
       : `Hi Sculpt Lab, ${question}`
-    window.open(`https://wa.me/23481266788?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
+    window.open(`https://wa.me/2348086828877?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
     setWhatsappOpen(false)
   }
 
@@ -147,35 +147,35 @@ export default function WaitlistPage() {
       }
 
 
-         await fetch(
-  'https://hook.eu1.make.com/ufxgi1ybgbmptbzdey546o0z5vo28xo2', 
-  {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      fullName: form.fullName,
-      whatsapp: form.whatsapp,
-      email: form.email,
-      experience: form.experience,
-      attendance: form.attendance,
-      frequency: form.frequency,
-      sessionType: form.sessionType,
-      benefit: form.benefit,
-      notes: form.notes || '',
-      submittedAt: new Date().toISOString(),
-    }),
-  }
-)
-    setSubmitted(true)
+      await fetch(
+        'https://hook.eu1.make.com/ufxgi1ybgbmptbzdey546o0z5vo28xo2',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            fullName: form.fullName,
+            whatsapp: form.whatsapp,
+            email: form.email,
+            experience: form.experience,
+            attendance: form.attendance,
+            frequency: form.frequency,
+            sessionType: form.sessionType,
+            benefit: form.benefit,
+            notes: form.notes || '',
+            submittedAt: new Date().toISOString(),
+          }),
+        }
+      )
+      setSubmitted(true)
 
-setToast({
-  type: 'success',
-  message: "You're on the Sculpt Lab waitlist!",
-})
+      setToast({
+        type: 'success',
+        message: "You're on the Sculpt Lab waitlist!",
+      })
 
-setForm({})
+      setForm({})
 
       setTimeout(() => {
         setToast(null)
@@ -192,7 +192,7 @@ setForm({})
         message: 'Something went wrong. Please try again.',
       })
 
-   
+
 
       setTimeout(() => {
         setToast(null)
@@ -265,58 +265,37 @@ setForm({})
       {/* HEADER */}
 
       <header className="overflow-hidden border-y border-border bg-foreground text-background py-3">
-        <div className="relative flex overflow-hidden whitespace-nowrap">
-          <motion.div
-            className="flex shrink-0 items-center"
-            animate={{ x: ["-50%", "0%"] }}
-            transition={{
-              duration: 18,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          >
-            <div className="flex items-center">
-              <span className="mx-6 text-xs font-medium uppercase tracking-[0.28em] text-primary-foreground">
-                Get ready, Lagos
-              </span>
+       <div className="relative flex overflow-hidden whitespace-nowrap">
+  <motion.div
+    className="flex shrink-0 items-center"
+    animate={{ x: ["-50%", "0%"] }}
+    transition={{
+      duration: 18,
+      repeat: Infinity,
+      ease: "linear",
+    }}
+  >
+    <div className="flex items-center">
+      <span className="mx-4 text-[9px] font-medium uppercase tracking-[0.2em] text-primary-foreground sm:text-[10px] sm:tracking-[0.24em] lg:mx-6 lg:text-xs lg:tracking-[0.28em]">
+        Get ready, Lagos
+      </span>
 
-              <span className="text-primary-foreground/50">✦</span>
+      <span className="text-primary-foreground/50">✦</span>
 
-              <span className="mx-6 text-xs font-medium uppercase tracking-[0.28em] text-primary-foreground">
-                The new Pilates experience is coming
-              </span>
+      <span className="mx-4 text-[9px] font-medium uppercase tracking-[0.2em] text-primary-foreground sm:text-[10px] sm:tracking-[0.24em] lg:mx-6 lg:text-xs lg:tracking-[0.28em]">
+        The new Pilates experience is coming
+      </span>
 
-              <span className="text-primary-foreground/50">✦</span>
+      <span className="text-primary-foreground/50">✦</span>
 
-              <span className="mx-6 text-xs font-medium uppercase tracking-[0.28em] text-primary-foreground">
-                Join the waitlist
-              </span>
+      <span className="mx-4 text-[9px] font-medium uppercase tracking-[0.2em] text-primary-foreground sm:text-[10px] sm:tracking-[0.24em] lg:mx-6 lg:text-xs lg:tracking-[0.28em]">
+        Join the waitlist
+      </span>
 
-              <span className="text-primary-foreground/50">✦</span>
-            </div>
-
-            {/* Duplicate for seamless loop */}
-            <div className="flex items-center">
-              <span className="mx-6 text-xs font-medium uppercase tracking-[0.28em] text-primary-foreground">
-                Get ready, Lagos
-              </span>
-
-              <span className="text-primary-foreground/50">✦</span>
-
-              <span className="mx-6 text-xs font-medium uppercase tracking-[0.28em] text-primary-foreground">
-                The new Pilates experience is coming
-              </span>
-
-              <span className="text-primary-foreground/50">✦</span>
-
-              <span className="mx-6 text-xs font-medium uppercase tracking-[0.28em] text-primary-foreground">
-                Join the waitlist
-              </span>
-
-              <span className="text-primary-foreground/50">✦</span>
-            </div>
-          </motion.div>
-        </div>
+      <span className="text-primary-foreground/50">✦</span>
+    </div>
+  </motion.div>
+</div>
       </header>
 
       <main id="top">
@@ -464,45 +443,45 @@ setForm({})
           </div>
         </section>
 
-      <section
-  id="waitlist"
-  className="
+        <section
+          id="waitlist"
+          className="
     mx-auto grid max-w-7xl gap-12
     px-6 py-20
     lg:grid-cols-[.75fr_1.25fr]
     lg:px-10 lg:py-28
   "
->
-  {/* LEFT SIDE */}
-  <div className="lg:sticky lg:top-10 lg:self-start">
-    <p className="text-xs uppercase tracking-[.25em] text-primary">
-      First access
-    </p>
+        >
+          {/* LEFT SIDE */}
+          <div className="lg:sticky lg:top-10 lg:self-start">
+            <p className="text-xs uppercase tracking-[.25em] text-primary">
+              First access
+            </p>
 
-    <h2 className="mt-4 font-serif text-5xl leading-none">
-      Save your spot.
-    </h2>
+            <h2 className="mt-4 font-serif text-5xl leading-none">
+              Save your spot.
+            </h2>
 
-    <p className="mt-6 max-w-sm leading-7 text-muted-foreground">
-      Leave your details and we&apos;ll be in touch with opening news,
-      founding offers, and a first look at the studio.
-    </p>
+            <p className="mt-6 max-w-sm leading-7 text-muted-foreground">
+              Leave your details and we&apos;ll be in touch with opening news,
+              founding offers, and a first look at the studio.
+            </p>
 
-    <div className="mt-10 flex items-center gap-4 text-sm text-muted-foreground">
-      <Mail className="h-4 w-4 text-primary" />
-      enquiries@sculptlab.com.ng
-    </div>
-  </div>
+            <div className="mt-10 flex items-center gap-4 text-sm text-muted-foreground">
+              <Mail className="h-4 w-4 text-primary" />
+              enquiries@sculptlab.com.ng
+            </div>
+          </div>
 
-  {/* RIGHT SIDE */}
-  {submitted ? (
-    <motion.div
-      ref={successRef}
-       initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-         
-      transition={{ duration: 0.5 }}
-      className="
+          {/* RIGHT SIDE */}
+          {submitted ? (
+            <motion.div
+              ref={successRef}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+
+              transition={{ duration: 0.5 }}
+              className="
         flex min-h-[520px]
         flex-col items-center justify-center
         rounded-[2rem]
@@ -512,28 +491,28 @@ setForm({})
         text-center
         sm:px-10
       "
-    >
-      <span className="flex h-16 w-16 items-center justify-center rounded-full bg-accent text-accent-foreground">
-        <Check className="h-7 w-7" />
-      </span>
+            >
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-accent text-accent-foreground">
+                <Check className="h-7 w-7" />
+              </span>
 
-      <p className="mt-7 text-xs font-medium uppercase tracking-[0.25em] text-primary">
-        Welcome to Sculpt Lab
-      </p>
+              <p className="mt-7 text-xs font-medium uppercase tracking-[0.25em] text-primary">
+                Welcome to Sculpt Lab
+              </p>
 
-      <h3 className="mt-3 font-serif text-5xl leading-none sm:text-6xl">
-        You&apos;re in.
-      </h3>
+              <h3 className="mt-3 font-serif text-5xl leading-none sm:text-6xl">
+                You&apos;re in.
+              </h3>
 
-      <p className="mt-5 max-w-md text-sm leading-7 text-muted-foreground sm:text-base">
-        Welcome to the beginning of something beautiful.
-        We&apos;ll be in touch with opening news, founding-member access,
-        and your first look at Sculpt Lab.
-      </p>
+              <p className="mt-5 max-w-md text-sm leading-7 text-muted-foreground sm:text-base">
+                Welcome to the beginning of something beautiful.
+                We&apos;ll be in touch with opening news, founding-member access,
+                and your first look at Sculpt Lab.
+              </p>
 
-      <a
-        href="#top"
-        className="
+              <a
+                href="#top"
+                className="
           mt-8 inline-flex items-center gap-2
           rounded-full bg-primary
           px-6 py-3
@@ -541,15 +520,15 @@ setForm({})
           transition-transform
           hover:-translate-y-0.5
         "
-      >
-        Back to the top
-        <ArrowUpRight className="h-4 w-4" />
-      </a>
-    </motion.div>
-  ) : (
-    <form
-      onSubmit={submit}
-      className="
+              >
+                Back to the top
+                <ArrowUpRight className="h-4 w-4" />
+              </a>
+            </motion.div>
+          ) : (
+            <form
+              onSubmit={submit}
+              className="
         rounded-[2rem]
         border border-border
         bg-card
@@ -558,50 +537,50 @@ setForm({})
         sm:p-8
         lg:p-10
       "
-      noValidate
-    >
-      {/* FORM HEADER */}
-      <div className="mb-8 flex items-start justify-between gap-6 border-b border-border pb-6">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-[.22em] text-primary">
-            Your details
-          </p>
+              noValidate
+            >
+              {/* FORM HEADER */}
+              <div className="mb-8 flex items-start justify-between gap-6 border-b border-border pb-6">
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-[.22em] text-primary">
+                    Your details
+                  </p>
 
-          <h3 className="mt-2 font-serif text-3xl">
-            Save your place
-          </h3>
-        </div>
+                  <h3 className="mt-2 font-serif text-3xl">
+                    Save your place
+                  </h3>
+                </div>
 
-        <span className="rounded-full bg-primary/10 px-3 py-1 text-xs text-primary">
-          8 quick questions
-        </span>
-      </div>
+                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs text-primary">
+                  8 quick questions
+                </span>
+              </div>
 
-      {/* FORM FIELDS */}
-      <div className="grid gap-6 sm:grid-cols-2">
-        {fields.map((field) => (
-          <label
-            key={field.name}
-            className="sm:col-span-1"
-          >
-            <span className="text-sm">
-              {field.label}{' '}
-              <span
-                className="text-primary"
-                aria-hidden="true"
-              >
-                *
-              </span>
-            </span>
+              {/* FORM FIELDS */}
+              <div className="grid gap-6 sm:grid-cols-2">
+                {fields.map((field) => (
+                  <label
+                    key={field.name}
+                    className="sm:col-span-1"
+                  >
+                    <span className="text-sm">
+                      {field.label}{' '}
+                      <span
+                        className="text-primary"
+                        aria-hidden="true"
+                      >
+                        *
+                      </span>
+                    </span>
 
-            <input
-              required={field.required}
-              type={field.type}
-              value={form[field.name] ?? ''}
-              onChange={(e) =>
-                update(field.name, e.target.value)
-              }
-              className="
+                    <input
+                      required={field.required}
+                      type={field.type}
+                      value={form[field.name] ?? ''}
+                      onChange={(e) =>
+                        update(field.name, e.target.value)
+                      }
+                      className="
                 mt-2 w-full rounded-xl
                 border border-border
                 bg-background/70
@@ -615,62 +594,62 @@ setForm({})
                 focus:ring-4
                 focus:ring-primary/10
               "
-            />
-          </label>
-        ))}
+                    />
+                  </label>
+                ))}
 
-        <SelectField
-          name="experience"
-          label="Reformer experience"
-          options={options.experience}
-          value={form.experience}
-          update={update}
-        />
+                <SelectField
+                  name="experience"
+                  label="Reformer experience"
+                  options={options.experience}
+                  value={form.experience}
+                  update={update}
+                />
 
-        <SelectField
-          name="attendance"
-          label="Likely attendance time"
-          options={options.attendance}
-          value={form.attendance}
-          update={update}
-        />
+                <SelectField
+                  name="attendance"
+                  label="Likely attendance time"
+                  options={options.attendance}
+                  value={form.attendance}
+                  update={update}
+                />
 
-        <SelectField
-          name="frequency"
-          label="Ideal frequency"
-          options={options.frequency}
-          value={form.frequency}
-          update={update}
-        />
+                <SelectField
+                  name="frequency"
+                  label="Ideal frequency"
+                  options={options.frequency}
+                  value={form.frequency}
+                  update={update}
+                />
 
-        <SelectField
-          name="sessionType"
-          label="Session type"
-          options={options.sessionType}
-          value={form.sessionType}
-          update={update}
-        />
+                <SelectField
+                  name="sessionType"
+                  label="Session type"
+                  options={options.sessionType}
+                  value={form.sessionType}
+                  update={update}
+                />
 
-        <SelectField
-          name="benefit"
-          label="What would you love from joining early?"
-          options={options.benefit}
-          value={form.benefit}
-          update={update}
-        />
+                <SelectField
+                  name="benefit"
+                  label="What would you love from joining early?"
+                  options={options.benefit}
+                  value={form.benefit}
+                  update={update}
+                />
 
-        <label className="sm:col-span-2">
-          <span className="text-sm">
-            Anything else you&apos;d like us to know?
-          </span>
+                <label className="sm:col-span-2">
+                  <span className="text-sm">
+                    Anything else you&apos;d like us to know?
+                  </span>
 
-          <textarea
-            rows={3}
-            value={form.notes ?? ''}
-            onChange={(e) =>
-              update('notes', e.target.value)
-            }
-            className="
+                  <textarea
+                    rows={3}
+                    value={form.notes ?? ''}
+                    onChange={(e) =>
+                      update('notes', e.target.value)
+                    }
+                    className="
               mt-2 w-full resize-none
               border-0 border-b border-border
               bg-transparent
@@ -681,25 +660,25 @@ setForm({})
               focus:border-primary
               focus:ring-0
             "
-          />
-        </label>
-      </div>
+                  />
+                </label>
+              </div>
 
-      {/* ERROR */}
-      {error && (
-        <p
-          role="alert"
-          className="mt-6 text-sm text-primary"
-        >
-          {error}
-        </p>
-      )}
+              {/* ERROR */}
+              {error && (
+                <p
+                  role="alert"
+                  className="mt-6 text-sm text-primary"
+                >
+                  {error}
+                </p>
+              )}
 
-      {/* SUBMIT BUTTON */}
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="
+              {/* SUBMIT BUTTON */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="
           mt-9 inline-flex items-center gap-3
           rounded-full bg-primary
           px-7 py-3
@@ -710,34 +689,34 @@ setForm({})
           disabled:opacity-60
           disabled:hover:translate-y-0
         "
-      >
-        {isSubmitting ? (
-          <>
-            <span
-              className="
+              >
+                {isSubmitting ? (
+                  <>
+                    <span
+                      className="
                 h-4 w-4 animate-spin
                 rounded-full border-2
                 border-primary-foreground/30
                 border-t-primary-foreground
               "
-            />
-            Saving your spot...
-          </>
-        ) : (
-          <>
-            Get on the list
-            <ArrowUpRight className="h-4 w-4" />
-          </>
-        )}
-      </button>
+                    />
+                    Saving your spot...
+                  </>
+                ) : (
+                  <>
+                    Get on the list
+                    <ArrowUpRight className="h-4 w-4" />
+                  </>
+                )}
+              </button>
 
-      <p className="mt-4 text-xs leading-5 text-muted-foreground">
-        By joining, you agree to receive occasional studio updates.
-        No noise, ever.
-      </p>
-    </form>
-  )}
-</section>
+              <p className="mt-4 text-xs leading-5 text-muted-foreground">
+                By joining, you agree to receive occasional studio updates.
+                No noise, ever.
+              </p>
+            </form>
+          )}
+        </section>
 
         <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-10 lg:pb-28">
           <div className="grid items-center gap-8 border-t border-border pt-12 md:grid-cols-[1fr_.8fr] md:gap-16 lg:pt-20">
@@ -752,12 +731,85 @@ setForm({})
       </main>
 
       <footer className="flex flex-col gap-5 border-t border-border px-6 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between lg:px-10"><span className="flex items-center gap-3"><Image src="/logo.png" alt="Sculpt Lab" width={38} height={38} className="h-9 w-9 object-contain" /><span>Opening soon. Made for your next chapter.</span></span><a href="https://instagram.com" aria-label="Sculpt Lab on Instagram" className="transition-colors hover:text-primary"><Instagram className="h-5 w-5" /></a></footer>
+  {/*
+<div className="fixed bottom-5 right-5 z-50 sm:bottom-7 sm:right-7">
+  {whatsappOpen && (
+    <motion.div
+      initial={{ opacity: 0, y: 10, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      className="absolute bottom-20 right-0 w-72 rounded-2xl border border-border bg-white p-4 text-foreground shadow-2xl"
+    >
+      <div className="mb-3 flex items-center justify-between">
+        <p className="font-serif text-lg">Ask us anything</p>
 
-      <div className="fixed bottom-5 right-5 z-50 sm:bottom-7 sm:right-7">{whatsappOpen && <motion.div initial={{ opacity: 0, y: 10, scale: .96 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="absolute bottom-20 right-0 w-72 rounded-2xl border border-border bg-card p-4 shadow-2xl"><div className="mb-3 flex items-center justify-between"><p className="font-serif text-lg">Ask us anything</p><button type="button" onClick={() => setWhatsappOpen(false)} className="text-muted-foreground" aria-label="Close WhatsApp questions">×</button></div><div className="grid gap-2"><button type="button" onClick={() => openWhatsApp('Can you tell me when the studio opens?')} className="rounded-xl border border-border px-3 py-3 text-left text-sm transition-colors hover:border-primary hover:bg-primary/5">When does the studio open?</button><button type="button" onClick={() => openWhatsApp('What are the class prices and founding member offers?')} className="rounded-xl border border-border px-3 py-3 text-left text-sm transition-colors hover:border-primary hover:bg-primary/5">What are the prices and offers?</button><button type="button" onClick={() => openWhatsApp('Other')} className="rounded-xl border border-border px-3 py-3 text-left text-sm transition-colors hover:border-primary hover:bg-primary/5">Other question</button></div></motion.div>}<button type="button" onClick={() => setWhatsappOpen((open) => !open)} aria-label="Ask Sculpt Lab about the waitlist on WhatsApp" className="flex h-16 w-16 items-center justify-center rounded-full bg-background shadow-[0_0_0_6px_hsl(var(--accent)/.18),0_0_30px_hsl(var(--accent)/.55)] transition-transform hover:scale-110"><motion.span animate={{ scale: [1, 1.08, 1], opacity: [1, .78, 1] }} transition={{ duration: 1.8, repeat: Infinity }}><Image src="/whatsapp-logo.png" alt="WhatsApp" width={44} height={44} className="h-11 w-11 object-contain" /></motion.span></button></div>
+        <button
+          type="button"
+          onClick={() => setWhatsappOpen(false)}
+          className="text-muted-foreground"
+          aria-label="Close WhatsApp questions"
+        >
+          ×
+        </button>
+      </div>
+
+      <div className="grid gap-2">
+        <button
+          type="button"
+          onClick={() =>
+            openWhatsApp("Can you tell me when the studio opens?")
+          }
+          className="rounded-xl border border-border bg-white px-3 py-3 text-left text-sm transition-colors hover:border-primary hover:bg-primary/5"
+        >
+          When does the studio open?
+        </button>
+
+        <button
+          type="button"
+          onClick={() =>
+            openWhatsApp(
+              "What are the class prices and founding member offers?"
+            )
+          }
+          className="rounded-xl border border-border bg-white px-3 py-3 text-left text-sm transition-colors hover:border-primary hover:bg-primary/5"
+        >
+          What are the prices and offers?
+        </button>
+
+        <button
+          type="button"
+          onClick={() => openWhatsApp("Other")}
+          className="rounded-xl border border-border bg-white px-3 py-3 text-left text-sm transition-colors hover:border-primary hover:bg-primary/5"
+        >
+          Other question
+        </button>
+      </div>
+    </motion.div>
+  )}
+
+  <button
+    type="button"
+    onClick={() => setWhatsappOpen((open) => !open)}
+    aria-label="Ask Sculpt Lab about the waitlist on WhatsApp"
+    className="flex h-16 w-16 items-center justify-center rounded-full bg-background shadow-[0_0_0_6px_hsl(var(--accent)/.18),0_0_30px_hsl(var(--accent)/.55)] transition-transform hover:scale-110"
+  >
+    <motion.span
+      animate={{ scale: [1, 1.08, 1], opacity: [1, 0.78, 1] }}
+      transition={{ duration: 1.8, repeat: Infinity }}
+    >
+      <Image
+        src="/images/whatsapplogo.jpg"
+        alt="WhatsApp"
+        width={44}
+        height={44}
+        className="h-11 w-11 object-contain"
+      />
+    </motion.span>
+  </button>
+</div>
+*/}
     </div>
   )
 }
-
-function SelectField({ name, label, options, value, update }: { name: string; label: string; options: string[]; value?: string; update: (name: string, value: string) => void }) {
+      function SelectField({name, label, options, value, update}: {name: string; label: string; options: string[]; value?: string; update: (name: string, value: string) => void }) {
   return <label className="sm:col-span-1"><span className="text-sm">{label} <span className="text-primary" aria-hidden="true">*</span></span><select required value={value ?? ''} onChange={(e) => update(name, e.target.value)} className="mt-2 w-full rounded-xl border border-border bg-background/70 px-4 py-3 text-base outline-none transition-all focus:border-primary focus:bg-background focus:ring-4 focus:ring-primary/10"><option value="">Select one</option>{options.map((option) => <option key={option} value={option}>{option}</option>)}</select></label>
 }
