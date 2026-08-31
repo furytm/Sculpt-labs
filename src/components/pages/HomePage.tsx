@@ -312,6 +312,13 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+
+      <Link
+        href="/classes"
+        className="fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-background/95 px-4 py-3 text-sm font-medium text-primary shadow-lg backdrop-blur transition hover:-translate-y-0.5 hover:border-primary"
+      >
+        Explore our classes <ChevronRight className="h-4 w-4" />
+      </Link>
     </div>
   )
-}
+  }

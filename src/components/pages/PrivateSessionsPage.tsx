@@ -160,12 +160,12 @@ export default function PrivateSessionsPage() {
                       </div>
                     ))}
                   </div>
-                  <Link
-                    href="/book"
-                    className="block text-center px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
-                  >
-                    Schedule Session
-                  </Link>
+               <Link
+  href="/book?type=PRIVATE"
+  className="block text-center px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+>
+  Schedule Session
+</Link>
                 </div>
               </motion.div>
             ))}
@@ -225,12 +225,12 @@ export default function PrivateSessionsPage() {
                   <p className="text-xs text-foreground/60 mb-6">
                     {formatPrice(pkg.pricePerPersonNGN)} per session
                   </p>
-                  <Link
-                    href="/book"
-                    className="block text-center px-6 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
-                  >
-                    Book Now
-                  </Link>
+                 <Link
+  href="/book?type=PRIVATE"
+  className="block text-center px-6 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+>
+  Book Now
+</Link>
                 </motion.div>
               ))}
             </motion.div>
@@ -270,12 +270,12 @@ export default function PrivateSessionsPage() {
                   <p className="text-sm text-foreground/60 mb-6">
                     {formatPrice(pkg.pricePerPersonNGN)} per person
                   </p>
-                  <Link
-                    href="/book"
-                    className="block text-center px-6 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
-                  >
-                    Book Now
-                  </Link>
+               <Link
+  href="/book?type=PRIVATE"
+  className="block text-center px-6 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+>
+  Book Now
+</Link>
                 </motion.div>
               ))}
             </motion.div>
@@ -297,12 +297,12 @@ export default function PrivateSessionsPage() {
             <p className="body-text text-lg text-foreground/70 mb-8">
               Consult with our instructors about creating your perfect program
             </p>
-            <Link
-              href="/book"
-              className="inline-block px-8 py-3 bg-primary text-primary-foreground font-sans font-medium rounded-lg hover:bg-primary/90 transition-colors soft-shadow"
-            >
-              Schedule Your Session
-            </Link>
+         <Link
+  href="/book?type=PRIVATE"
+  className="inline-block px-8 py-3 bg-primary text-primary-foreground font-sans font-medium rounded-lg hover:bg-primary/90 transition-colors soft-shadow"
+>
+  Schedule Your Session
+</Link>
           </motion.div>
         </div>
       </section>

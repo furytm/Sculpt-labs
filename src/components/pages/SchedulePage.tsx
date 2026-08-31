@@ -194,7 +194,7 @@ const sessionsByTime = scheduleForDate.reduce<Record<string, ScheduleSession[]>>
 
                         {/* CTA Button */}
                         <Link
-                          href={`/book?date=${selectedDate}&time=${encodeURIComponent(time)}&classId=${encodeURIComponent(session.classId)}`}
+                          href={`/book?classId=${encodeURIComponent(session.classId)}`}
                           className="block w-full text-center px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
                         >
                           Book Now

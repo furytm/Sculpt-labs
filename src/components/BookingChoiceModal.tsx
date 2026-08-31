@@ -4,8 +4,15 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, CalendarDays, X } from 'lucide-react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
-
-export default function BookingChoiceModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+export default function BookingChoiceModal({
+  open,
+  onClose,
+  classId,
+}: {
+  open: boolean
+  onClose: () => void
+  classId?: string
+}) {
   if (typeof document === 'undefined') return null
 
   return createPortal(
@@ -33,8 +40,16 @@ export default function BookingChoiceModal({ open, onClose }: { open: boolean; o
               <X className="h-4 w-4" />
             </button>
 
+            <p className="mb-4 rounded-lg border border-accent/30 bg-accent/10 p-3 text-sm leading-6 text-foreground/80">
+              Please note: If you are pregnant, we recommend a Private or Duo Session so our instructors can provide the appropriate level of individual support.
+            </p>
+
             <div className="grid gap-3 pt-1 sm:grid-cols-2">
-              <Link href="/book?type=GROUP" onClick={onClose} className="group rounded-xl border-2 border-primary/20 bg-primary/5 p-4 transition hover:-translate-y-1 hover:border-primary hover:bg-primary/10">
+            <Link
+  href={`/book?type=GROUP${classId ? `&classId=${encodeURIComponent(classId)}` : ''}`}
+  onClick={onClose}
+  className="group rounded-xl border-2 border-primary/20 bg-primary/5 p-4 transition hover:-translate-y-1 hover:border-primary hover:bg-primary/10"
+>
                 <span className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
                   <CalendarDays className="h-5 w-5" />
                 </span>
@@ -44,7 +59,11 @@ export default function BookingChoiceModal({ open, onClose }: { open: boolean; o
                 </span>
               </Link>
 
-              <Link href="/book?type=PRIVATE" onClick={onClose} className="group rounded-xl border-2 border-border bg-muted/20 p-4 transition hover:-translate-y-1 hover:border-primary hover:bg-primary/10">
+            <Link
+  href={`/book?type=PRIVATE${classId ? `&classId=${encodeURIComponent(classId)}` : ''}`}
+  onClick={onClose}
+  className="group rounded-xl border-2 border-border bg-muted/20 p-4 transition hover:-translate-y-1 hover:border-primary hover:bg-primary/10"
+>
                 <span className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-foreground text-background">
                   <CalendarDays className="h-5 w-5" />
                 </span>

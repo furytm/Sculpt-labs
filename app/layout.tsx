@@ -4,6 +4,8 @@ import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import Header from '@/src/components/Header'
 import Footer from '@/src/components/Footer'
+import { AuthProvider } from '@/src/components/AuthProvider'
+import { Toaster } from '@/components/ui/toaster'
 
 const cormorant = Cormorant_Garamond({ 
   subsets: ['latin'],
@@ -41,11 +43,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`bg-background scroll-smooth ${cormorant.variable} ${inter.variable}`}>
       <body className="font-sans antialiased bg-background text-foreground">
-        {/* <Header /> */}
-        <main>
-          {children}
-        </main>
-        {/* <Footer /> */}
+        <AuthProvider>
+          <Header />
+          <main>
+            {children}
+          </main>
+          <Footer />
+          <Toaster />
+        </AuthProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
         
       </body>

@@ -1,8 +1,8 @@
 import { Suspense } from 'react'
-import BookPage from '@/src/components/pages/BookPage'
+import BookingRoute from '@/src/components/BookingRoute'
 
 function BookPageContent() {
-  return <BookPage />
+  return <BookingRoute />
 }
 
 export default function Page() {

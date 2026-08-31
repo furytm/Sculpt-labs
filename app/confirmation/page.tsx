@@ -231,15 +231,19 @@ function ConfirmationContent() {
                   className="space-y-4"
                 >
                   <button
-                    onClick={() =>
-                      router.push(
-                        `/register?email=${encodeURIComponent(
-                          email
-                        )}&reference=${encodeURIComponent(
-                          bookingReference
-                        )}`
-                      )
-                    }
+                  onClick={() =>
+  router.push(
+    `/register?email=${encodeURIComponent(
+      email
+    )}&fullName=${encodeURIComponent(
+      booking?.fullName || ''
+    )}&phone=${encodeURIComponent(
+      booking?.phone || ''
+    )}&reference=${encodeURIComponent(
+      bookingReference
+    )}`
+  )
+}
                     className="w-full px-6 py-3 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors"
                   >
                     Create an Account

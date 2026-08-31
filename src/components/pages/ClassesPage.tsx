@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { Clock, Users, Zap } from 'lucide-react'
 import VideoHero from '../VideoHero'
 import { classes } from '@/lib/data/classes'
+import BookingNowTrigger from '../BookingNowTrigger'
 
 export default function ClassesPage() {
   const classItems = classes.map((cls) => ({
@@ -91,13 +92,12 @@ export default function ClassesPage() {
                       </span>
                     ))}
                   </div>
-
-                  <Link
-                    href={`/book?classId=${classId}`}
-                    className="inline-block w-full text-center px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
-                  >
-                    Book Class
-                  </Link>
+<BookingNowTrigger
+  classId={classId}
+  className="w-full px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+>
+  Book Class
+</BookingNowTrigger>
                 </div>
               </motion.div>
             )

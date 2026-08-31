@@ -3,16 +3,18 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { useAuth } from './AuthProvider'
 import { motion } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import BookingChoiceModal from './BookingChoiceModal'
 
 export default function Header() {
   const pathname = usePathname()
+  const router = useRouter()
+  const { user, loading } = useAuth()
   const [isScrolled, setIsScrolled] = useState(false)
 
-  if (pathname === '/waitlist') return null
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false)
 
@@ -22,14 +24,20 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  useEffect(() => {
+    if (!loading && user && (pathname === '/login' || pathname === '/register')) router.replace('/dashboard')
+  }, [loading, user, pathname, router])
+
+  if (pathname === '/waitlist') return null
+
   const navLinks = [
     { href: '/about', label: 'About Us' },
     { href: '/classes', label: 'Classes' },
-    { href: '/schedule', label: 'Schedule' },
     { href: '/memberships', label: 'Memberships' },
     { href: '/private-sessions', label: 'Private Sessions' },
     { href: '/book', label: 'Book Now' },
     { href: '/journal', label: 'Journal' },
+   
   ]
 
   const desktopLinkClass = 'font-sans text-sm tracking-wide text-foreground/70 hover:text-primary transition-colors relative group whitespace-nowrap'
@@ -74,6 +82,15 @@ export default function Header() {
               <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
             </Link>
           ))}
+          {!loading && (user ? (
+            <Link href="/dashboard" className="rounded-lg border border-primary px-4 py-2 font-sans text-sm tracking-wide text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
+              Dashboard
+            </Link>
+          ) : (
+            <Link href="/login" className="rounded-lg border border-primary px-4 py-2 font-sans text-sm tracking-wide text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
+              Log in
+            </Link>
+          ))}
         </nav>
       </div>
 
@@ -101,9 +118,14 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-            <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="mt-2 rounded-lg bg-primary px-3 py-2 text-center font-sans text-sm text-primary-foreground transition-colors hover:bg-primary/90">
-              Get Started
-            </Link>
+            {!loading && (user ? (
+              <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="mt-2 rounded-lg border border-primary px-3 py-2 text-center font-sans text-sm text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
+                Dashboard
+              </Link>
+            ) : <>
+              <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="mt-2 rounded-lg border border-primary px-3 py-2 text-center font-sans text-sm text-primary transition-colors hover:bg-primary hover:text-primary-foreground">Log in</Link>
+              <Link href="/register" onClick={() => setIsMobileMenuOpen(false)} className="rounded-lg bg-primary px-3 py-2 text-center font-sans text-sm text-primary-foreground transition-colors hover:bg-primary/90">Register</Link>
+            </>)}
           </nav>
         </motion.div>
       )}
