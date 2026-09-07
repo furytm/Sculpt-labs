@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import useSWR from 'swr'
 import { ArrowRight, CheckCircle2, LogOut } from 'lucide-react'
 import { useRequireAuth } from '@/src/components/AuthProvider'
@@ -14,7 +14,7 @@ type Tab = 'overview' | 'membership' | 'bookings' | 'profile'
 function SectionLabel({ children }: { children: React.ReactNode }) { return <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-accent">{children}</p> }
 function membershipValue(value: unknown) { return value === undefined || value === null || value === '' ? null : String(value) }
 
-export default function DashboardPage() {
+ function DashboardContent()  {
   const router = useRouter(); const searchParams = useSearchParams(); const { user, loading, logout } = useRequireAuth(); const [tab, setTab] = useState<Tab>('overview'); const [loggingOut, setLoggingOut] = useState(false)
   useEffect(() => { const view = searchParams.get('view'); if (view === 'membership' || view === 'bookings' || view === 'profile') setTab(view); else setTab('overview') }, [searchParams])
   const { data: bookings, error, isLoading, mutate } = useSWR<Booking[]>(user ? 'member-bookings' : null, getMyBookings, { revalidateOnFocus: false })
@@ -32,3 +32,18 @@ function BookingDetails({ booking }: { booking: Booking }) { return <div classNa
 function Info({ label, value }: { label: string; value?: string | null }) { return value ? <div><p className="text-muted-foreground">{label}</p><p className="mt-1 text-primary">{value}</p></div> : null }
 function HealthStatus({ booking, onAction }: { booking?: Booking; onAction: () => void }) { const complete = booking && hasHealthSafety(booking); return <section className="border border-border bg-background p-6 sm:p-8"><SectionLabel>Health & safety</SectionLabel><div className="mt-5 flex flex-wrap items-center justify-between gap-4"><div><h2 className="font-serif text-2xl text-primary">{complete ? 'Completed' : 'Action required'}</h2><p className="mt-1 text-sm text-muted-foreground">{complete ? 'Your form is on file.' : 'Complete your form before confirming a booking.'}</p></div>{!complete && booking && <button type="button" onClick={onAction} className="inline-flex items-center gap-2 bg-primary px-4 py-3 text-sm text-primary-foreground">Complete form <ArrowRight className="h-4 w-4" /></button>}</div></section> }
 function BookingRow({ booking }: { booking: Booking }) { return <div className="border border-border bg-background p-5"><div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><h3 className="font-serif text-xl text-primary">{booking.classId ? getClassName(booking.classId) : 'Class not selected'}</h3><div className="mt-3 grid gap-2 text-sm text-muted-foreground sm:grid-cols-2"><Info label="Schedule" value={booking.schedule?.dayOfWeek} /><Info label="Time" value={booking.schedule ? `${formatTime(booking.schedule.startTime)} – ${formatTime(booking.schedule.endTime)}` : null} /><Info label="Instructor" value={booking.schedule?.tutorName} /><Info label="Start date" value={formatDate(booking.bookingDate)} /><Info label="Membership" value={booking.membership?.name} /><Info label="Created" value={formatDate(booking.createdAt)} /></div></div><span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.12em] text-accent"><CheckCircle2 className="h-4 w-4" />{booking.bookingStatus}</span></div></div> }
+
+
+export default function DashboardPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex min-h-[70vh] items-center justify-center text-muted-foreground">
+          Loading your member space...
+        </main>
+      }
+    >
+      <DashboardContent />
+    </Suspense>
+  )
+}
