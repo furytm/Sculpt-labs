@@ -2,8 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Cormorant_Garamond, Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
-import Header from '@/src/components/Header'
-import Footer from '@/src/components/Footer'
+import AppChrome from '@/src/components/AppChrome'
 import { AuthProvider } from '@/src/components/AuthProvider'
 import { Toaster } from '@/components/ui/toaster'
 
@@ -44,11 +43,7 @@ export default function RootLayout({
     <html lang="en" className={`bg-background scroll-smooth ${cormorant.variable} ${inter.variable}`}>
       <body className="font-sans antialiased bg-background text-foreground">
         <AuthProvider>
-          <Header />
-          <main>
-            {children}
-          </main>
-          <Footer />
+          <AppChrome>{children}</AppChrome>
           <Toaster />
         </AuthProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}

@@ -133,7 +133,7 @@ export default function JournalPage() {
                 <span>{articles[0].readTime}</span>
               </div>
               <Link
-                href="#"
+                href="/contact"
                 className="inline-flex items-center text-primary hover:text-primary/70 transition-colors font-medium"
               >
                 Read Article
@@ -226,7 +226,7 @@ export default function JournalPage() {
                   </div>
 
                   <Link
-                    href="#"
+                    href="/contact"
                     className="inline-flex items-center text-primary hover:text-primary/70 transition-colors text-sm font-medium group/link"
                   >
                     Read More

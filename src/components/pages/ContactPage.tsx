@@ -74,11 +74,9 @@ export default function ContactPage() {
                     Studio Location
                   </h3>
                   <p className="body-text text-sm text-foreground/70">
-                    123 Wellness Avenue
+                    Sculpt LAB Pilates Studio
                     <br />
-                    Suite 500
-                    <br />
-                    Los Angeles, CA 90001
+                    Lagos, Nigeria
                   </p>
                 </div>
               </div>
@@ -99,10 +97,10 @@ export default function ContactPage() {
                     Phone
                   </h3>
                   <a
-                    href="tel:+13105551234"
+                    href="tel:+2348086828877"
                     className="body-text text-sm text-foreground/70 hover:text-primary transition-colors"
                   >
-                    +1 (310) 555-1234
+                    0808 682 8877
                   </a>
                 </div>
               </div>
@@ -123,10 +121,10 @@ export default function ContactPage() {
                     Email
                   </h3>
                   <a
-                    href="mailto:enquiries@sculptlab.com.ng"
+                    href="mailto:Support@scultlab.com.ng"
                     className="body-text text-sm text-foreground/70 hover:text-primary transition-colors"
                   >
-                    enquiries@sculptlab.com.ng
+                    Support@scultlab.com.ng
                   </a>
                 </div>
               </div>
@@ -279,7 +277,7 @@ export default function ContactPage() {
           <div className="text-center">
             <MapPin className="w-16 h-16 text-primary/30 mx-auto mb-4" />
             <p className="body-text text-foreground/50">
-              123 Wellness Avenue, Los Angeles, CA 90001
+              Sculpt LAB Pilates Studio, Lagos, Nigeria
             </p>
           </div>
         </motion.div>

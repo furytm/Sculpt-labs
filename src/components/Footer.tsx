@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
-import { Mail } from 'lucide-react'
+import { Mail, Phone } from 'lucide-react'
 
 export default function Footer() {
   const pathname = usePathname()
@@ -25,6 +25,7 @@ export default function Footer() {
     ],
     resources: [
       { label: 'Journal', href: '/journal' },
+      { label: 'Sculpt LAB Schedule', href: '/schedule' },
       { label: 'Studio Guidelines', href: '/studio-guidelines' },
       { label: 'FAQ', href: '/contact' },
     ],
@@ -44,7 +45,7 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-3 mb-4">
               <div className="relative h-10 w-10">
                 <Image
-                  src="/logo.jpg"
+                  src="/logo.png"
                   alt="Sculpt LAB Logo"
                   fill
                   className="object-contain"
@@ -55,7 +56,10 @@ export default function Footer() {
             <p className="text-sm opacity-80 leading-relaxed">
               Transform your body and mind through the power of pilates. Experience luxury wellness.
             </p>
-            <a href="mailto:enquiries@sculptlab.com.ng" className="mt-5 flex items-center gap-2 text-sm opacity-80 transition-opacity hover:opacity-100"><Mail className="h-4 w-4" /> enquiries@sculptlab.com.ng</a>
+            <div className="mt-5 space-y-3 text-sm opacity-80">
+              <a href="mailto:Support@scultlab.com.ng" className="flex items-center gap-2 transition-opacity hover:opacity-100"><Mail className="h-4 w-4" /> Support@scultlab.com.ng</a>
+              <a href="tel:+2348086828877" className="flex items-center gap-2 transition-opacity hover:opacity-100"><Phone className="h-4 w-4" /> 0808 682 8877</a>
+            </div>
           </motion.div>
 
           {/* Links */}
@@ -94,12 +98,12 @@ export default function Footer() {
             © {currentYear} Sculpt LAB Pilates. All rights reserved.
           </p>
           <div className="flex gap-6">
-            <a href="#" className="text-sm opacity-70 hover:opacity-100 transition-opacity">
+            <Link href="/contact" className="text-sm opacity-70 hover:opacity-100 transition-opacity">
               Privacy Policy
-            </a>
-            <a href="#" className="text-sm opacity-70 hover:opacity-100 transition-opacity">
+            </Link>
+            <Link href="/contact" className="text-sm opacity-70 hover:opacity-100 transition-opacity">
               Terms of Service
-            </a>
+            </Link>
           </div>
         </div>
       </div>

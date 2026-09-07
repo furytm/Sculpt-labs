@@ -92,7 +92,7 @@ try {
         })
 
         setSuccess(
-          'Your account is ready. Check your email to verify it, then log in.'
+          'Your account is ready.Proceed to login, .'
         )
       } else {
         toast({

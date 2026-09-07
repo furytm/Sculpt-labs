@@ -1,234 +1,90 @@
 'use client'
 
-import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Clock, Users, Calendar, ArrowRight } from 'lucide-react'
+import { ArrowRight, Clock3, Dumbbell, Sparkles } from 'lucide-react'
 import Hero from '../Hero'
-import { classes } from '@/lib/data/classes'
-import { upcomingSchedule, getScheduleForDate, getNextAvailableDate } from '@/lib/data/schedule'
-import { getInstructorById, getInstructorForTime } from '@/lib/data/instructors'
-import { getClassById } from '@/lib/data/classes'
 
+const weeklySchedule = [
+  { day: 'Monday', sessions: [['10:00 AM', 'Intermediate'], ['11:00 AM', 'Beginner'], ['12:00 PM', 'Beginner'], ['1:00 PM', 'Intermediate']] },
+  { day: 'Tuesday', sessions: [['7:00 AM', 'Intermediate'], ['8:00 AM', 'Reformer Stretch'], ['9:00 AM', 'Beginner'], ['11:00 AM', 'Intermediate'], ['2:00 PM', 'Beginner'], ['3:00 PM', 'Pilates and Strength'], ['4:00 PM', 'Intermediate'], ['5:00 PM', 'Beginner']] },
+  { day: 'Wednesday', sessions: [['9:00 AM', 'Intermediate'], ['4:00 PM', 'Intermediate'], ['5:00 PM', 'Beginner'], ['6:00 PM', 'Beginner']] },
+  { day: 'Thursday', sessions: [['8:00 AM', 'Pilates + Strength'], ['9:00 AM', 'Intermediate'], ['10:00 AM', 'Pilates + Strength'], ['11:00 AM', 'Beginner'], ['3:00 PM', 'Intermediate'], ['4:00 PM', 'Beginner']] },
+  { day: 'Friday', sessions: [['11:00 AM', 'Beginner'], ['12:00 PM', 'Intermediate'], ['1:00 PM', 'Reformer Stretch'], ['2:00 PM', 'Beginner']] },
+  { day: 'Saturday', sessions: [['7:00 AM', 'Beginner'], ['8:00 AM', 'Intermediate'], ['9:00 AM', 'Beginner'], ['10:00 AM', 'Pilates + Strength']] },
+]
 
-interface ScheduleSession {
-  id: string;
-  classId: string;
-  date: string;
-  time: string;
-  availableSlots: number;
+const classTone = (name: string) => {
+  if (name.includes('Reformer')) return 'bg-accent/15 text-accent-foreground'
+  if (name.includes('Strength')) return 'bg-secondary/40 text-primary'
+  return 'bg-primary/10 text-primary'
 }
+
 export default function SchedulePage() {
-  const [selectedDate, setSelectedDate] = useState<string>(getNextAvailableDate())
-  const [displayWeek, setDisplayWeek] = useState<number>(0)
-
-  // Get unique dates for the week starting from selected date
-  const getWeekDates = () => {
-    const dates: string[] = []
-    const startDate = new Date(selectedDate)
-    startDate.setDate(startDate.getDate() + displayWeek * 7)
-
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(startDate)
-      date.setDate(date.getDate() + i)
-      const dateStr = date.toISOString().split('T')[0]
-      if (upcomingSchedule.some((s) => s.date === dateStr)) {
-        dates.push(dateStr)
-      }
-    }
-    return dates
-  }
-
-  const weekDates = getWeekDates()
-  const scheduleForDate = getScheduleForDate(selectedDate)
-
-  // Group sessions by time
-const sessionsByTime = scheduleForDate.reduce<Record<string, ScheduleSession[]>>(
-  (acc, session) => {
-    if (!acc[session.time]) {
-      acc[session.time] = [];
-    }
-
-    acc[session.time].push(session);
-
-    return acc;
-  },
-  {}
-);
-
-  const sortedTimes = Object.keys(sessionsByTime).sort((a, b) => a.localeCompare(b))
-
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-    })
-  }
-
-  const getDayName = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('en-US', { weekday: 'short' })
-  }
-
   return (
-    <div className="w-full">
-      {/* Hero */}
+    <div className="w-full overflow-hidden">
       <Hero
-        title="Class Schedule"
-        subtitle="Browse our daily classes and find the perfect time for your session"
-        imageSrc="/images/schedule-hero-pilates.png"
-        imageAlt="Weekly class schedule with pilates instructors"
+        title="Sculpt LAB Schedule"
+        subtitle="Make space for strength, control, and the kind of movement that stays with you."
+        imageSrc="/images/schedule-hero-pilates-resting.png"
+        imageAlt="Pilates class in the Sculpt LAB studio"
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {/* Week Navigation */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="font-serif text-2xl font-medium text-primary">Weekly Schedule</h2>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setDisplayWeek(Math.max(0, displayWeek - 1))}
-                disabled={displayWeek === 0}
-                className="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors disabled:opacity-50"
-              >
-                Previous Week
-              </button>
-              <button
-                onClick={() => setDisplayWeek(displayWeek + 1)}
-                className="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors"
-              >
-                Next Week
-              </button>
+      <section className="relative py-16 sm:py-24">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:items-end">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-[0.28em] text-accent">Move with intention</p>
+              <h2 className="mt-4 font-serif text-4xl leading-tight text-primary sm:text-5xl">Your week, sculpted.</h2>
+            </div>
+            <div className="flex gap-4 border-l border-primary/20 pl-5 text-sm leading-7 text-foreground/70 sm:pl-8">
+              <Sparkles className="mt-1 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
+              <p>Choose a pace that feels right for your body. Our timetable blends foundational, intermediate, reformer stretch, and strength-led sessions.</p>
             </div>
           </div>
 
-          {/* Day Selector */}
-          <div className="grid grid-cols-7 gap-2">
-            {weekDates.map((date) => (
-              <motion.button
-                key={date}
-                onClick={() => setSelectedDate(date)}
-                whileHover={{ scale: 1.05 }}
-                className={`p-3 rounded-lg transition-all text-center ${
-                  selectedDate === date ? 'bg-primary text-primary-foreground' : 'glassmorphism hover:border-primary'
-                }`}
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {weeklySchedule.map((day, index) => (
+              <motion.article
+                key={day.day}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ delay: index * 0.05 }}
+                className="group border border-border bg-background p-5 transition hover:-translate-y-1 hover:border-primary hover:shadow-xl hover:shadow-primary/5 sm:p-6"
               >
-                <div className="text-xs font-medium">{getDayName(date)}</div>
-                <div className="text-sm font-serif">{new Date(date).getDate()}</div>
-              </motion.button>
+                <div className="flex items-baseline justify-between border-b border-border pb-4">
+                  <h3 className="font-serif text-2xl text-primary">{day.day}</h3>
+                  <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{day.sessions.length} classes</span>
+                </div>
+                <div className="mt-5 space-y-3">
+                  {day.sessions.map(([time, type]) => (
+                    <div key={`${day.day}-${time}-${type}`} className="flex items-center justify-between gap-3">
+                      <span className="flex items-center gap-2 text-sm text-foreground/70"><Clock3 className="h-4 w-4 text-accent" aria-hidden="true" />{time}</span>
+                      <span className={`rounded-full px-3 py-1 text-right text-[11px] font-medium leading-4 ${classTone(type)}`}>{type}</span>
+                    </div>
+                  ))}
+                </div>
+              </motion.article>
             ))}
           </div>
-        </motion.div>
+        </div>
+      </section>
 
-        {/* Schedule Grid */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
-          <h3 className="font-serif text-xl font-medium text-primary mb-6">
-            Schedule for {formatDate(selectedDate)}
-          </h3>
-
-          {sortedTimes.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-foreground/70">No classes available for this date</p>
-            </div>
-          ) : (
-            sortedTimes.map((time) => (
-              <motion.div
-                key={time}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="glassmorphism p-6 rounded-lg"
-              >
-                <h4 className="font-serif text-lg font-medium text-primary mb-4">{time}</h4>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {sessionsByTime[time].map((session, idx) => {
-  const classInfo = getClassById(session.classId);
-  const instructor = getInstructorForTime(time);
-                    return (
-                      <motion.div
-                        key={session.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.05 }}
-                        className="bg-muted/30 p-4 rounded-lg border border-border hover:border-primary transition-all"
-                      >
-                        {/* Class Image Thumbnail */}
-                        {classInfo && (
-                          <div className="relative h-28 mb-3 rounded-lg overflow-hidden">
-                            <Image
-                              src={classInfo.image}
-                              alt={classInfo.name}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                        )}
-
-                        {/* Class Details */}
-                        <h5 className="font-serif font-medium text-primary mb-3">{classInfo?.name || 'Unknown Class'}</h5>
-
-                        <div className="space-y-2 text-sm mb-4">
-                          <div className="flex items-center gap-2 text-foreground/70">
-                            <Users className="w-4 h-4" />
-                            <span>{instructor?.name || 'TBD'}</span>
-                          </div>
-
-                          <div className="flex items-center gap-2 text-foreground/70">
-                            <Clock className="w-4 h-4" />
-                            <span>{classInfo?.duration || 50} minutes</span>
-                          </div>
-
-                          <div className="flex items-center gap-2 text-foreground/70">
-                            <Users className="w-4 h-4" />
-                            <span>{session.availableSlots} slots available</span>
-                          </div>
-                        </div>
-
-                        {/* Level Badge */}
-                        <div className="mb-4">
-                          <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full">
-                            {classInfo?.level}
-                          </span>
-                        </div>
-
-                        {/* CTA Button */}
-                        <Link
-                          href={`/book?classId=${encodeURIComponent(session.classId)}`}
-                          className="block w-full text-center px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
-                        >
-                          Book Now
-                        </Link>
-                      </motion.div>
-                    )
-                  })}
-                </div>
-              </motion.div>
-            ))
-          )}
-        </motion.div>
-
-        {/* Quick Book Section */}
-        <section className="py-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="glassmorphism p-12 text-center rounded-xl"
-          >
-            <h2 className="font-serif text-3xl font-medium text-primary mb-4">Ready to Book?</h2>
-            <p className="body-text text-lg text-foreground/70 mb-8">
-              Select a class above or start from the beginning to choose your perfect session
-            </p>
-            <Link
-              href="/book"
-              className="inline-block px-8 py-3 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2"
-            >
-              Book Your Session <ArrowRight className="w-4 h-4" />
-            </Link>
-          </motion.div>
-        </section>
-      </div>
+      <section className="bg-muted/30 py-16 sm:py-24">
+        <div className="mx-auto grid max-w-6xl gap-10 px-4 sm:grid-cols-[0.8fr_1.2fr] sm:px-6 lg:px-8 lg:items-center">
+          <div className="relative min-h-80 overflow-hidden rounded-2xl soft-shadow sm:min-h-[420px]">
+            <Image src="/images/studio-class.png" alt="Sculpt LAB Pilates class" fill className="object-cover" />
+          </div>
+          <div>
+            <div className="flex items-center gap-3 text-xs uppercase tracking-[0.25em] text-accent"><Dumbbell className="h-4 w-4" aria-hidden="true" /> Class notes</div>
+            <h2 className="mt-4 font-serif text-4xl text-primary">Arrive ready to feel better.</h2>
+            <p className="mt-5 max-w-xl text-base leading-8 text-foreground/70">Please arrive a few minutes early, wear comfortable movement clothes, and let your instructor know how your body is feeling that day. Every class is an invitation to work with your body, not against it.</p>
+            <Link href="/book" className="mt-8 inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90">Book your session <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

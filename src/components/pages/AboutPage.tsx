@@ -147,9 +147,18 @@ export default function AboutPage() {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {[
-              { name: 'Amara Okafor', image: '/images/instructor-amara.png', specialty: 'Reformer & mindful movement' },
-              { name: 'Chioma Adeyemi', image: '/images/instructor-chioma.png', specialty: 'Strength, mobility & alignment' },
-              { name: 'Zainab Bello', image: '/images/instructor-zainab.png', specialty: 'Mat Pilates & restorative flow' },
+              {
+                name: 'Betty',
+                image: '/images/instructor-betty.png',
+                specialty: 'Reformer Pilates & mindful movement',
+                bio: 'Betty brings calm precision and thoughtful coaching to every session, helping members build strength, confidence, and a deeper connection with their movement.',
+              },
+              {
+                name: 'Hope',
+                image: '/images/instructor-hope.png',
+                specialty: 'Strength, mobility & alignment',
+                bio: 'Hope creates energising, supportive classes that meet every body where it is while making progress feel purposeful, attainable, and enjoyable.',
+              },
             ].map((instructor, idx) => (
               <motion.div
                 key={instructor.name}
@@ -174,7 +183,7 @@ export default function AboutPage() {
                   Certified Pilates Instructor · {instructor.specialty}
                 </p>
                 <p className="body-text text-sm text-foreground/60 mt-2">
-                  Specializing in reformer and mat pilates with a passion for holistic wellness.
+                  {instructor.bio}
                 </p>
               </motion.div>
             ))}
