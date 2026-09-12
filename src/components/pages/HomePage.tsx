@@ -6,7 +6,7 @@ import { motion } from 'framer-motion'
 import { ChevronRight, Sparkles } from 'lucide-react'
 import VideoHero from '../VideoHero'
 import IconRenderer from '../IconRenderer'
-import BookingNowTrigger from '../BookingNowTrigger'
+import { classes } from '../../../lib/data/classes'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -36,19 +36,19 @@ export default function HomePage() {
     videoSrc="/videos/pilates-studio.mp4"
   >
     <div className="flex flex-col gap-3 w-full px-6">
-      <BookingNowTrigger className="px-5 py-2.5 bg-primary text-primary-foreground font-sans text-sm font-medium rounded-full hover:bg-primary/90 transition-colors soft-shadow text-center">Book Your Session</BookingNowTrigger>
+      <Link href="/classes" className="px-5 py-2.5 bg-primary text-primary-foreground font-sans text-sm font-medium rounded-full hover:bg-primary/90 transition-colors soft-shadow text-center">Book Your Session</Link>
 
       <Link
-        href="/classes"
+        href="/schedule"
         className="px-5 py-2.5 border border-white text-white font-sans text-sm font-medium rounded-full hover:bg-white/10 transition-colors text-center"
       >
-        Explore Classes
+    Our Schedule
       </Link>
     </div>
   </VideoHero>
 </div>
 
-      {/* Desktop Hero Section with Content Overlay */}
+         {/* Desktop Hero Section with Content Overlay */}
       <section className="hidden lg:block relative w-full overflow-hidden mt-16 md:mt-20">
         {/* Video Background */}
         <video
@@ -74,25 +74,83 @@ export default function HomePage() {
               animate="visible"
               className="max-w-2xl"
             >
-              <motion.h1 variants={itemVariants} className="hero-text mb-6 text-white">
-              Move with intention, live with balance
+              <motion.h1
+                variants={itemVariants}
+                className="hero-text mb-6 text-white"
+              >
+                Move with intention, live with balance
               </motion.h1>
-              <motion.p variants={itemVariants} className="body-text text-lg text-white/80 mb-8">
-                Experience luxury pilates at Sculpt LAB. Our expert instructors guide you through transformative sessions that strengthen, lengthen, and empower your entire body.
+
+              <motion.p
+                variants={itemVariants}
+                className="body-text text-lg text-white/80 mb-8"
+              >
+                Experience luxury pilates at Sculpt LAB. Our expert instructors
+                guide you through transformative sessions that strengthen,
+                lengthen, and empower your entire body.
               </motion.p>
-              <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4">
-                <BookingNowTrigger className="px-8 py-3 bg-primary text-primary-foreground font-sans font-medium rounded-lg hover:bg-primary/90 transition-colors soft-shadow text-center">Book Your Session</BookingNowTrigger>
+
+              <motion.div
+                variants={itemVariants}
+                className="flex flex-col sm:flex-row gap-4"
+              >
                 <Link
                   href="/classes"
+                  className="px-8 py-3 bg-primary text-primary-foreground font-sans font-medium rounded-lg hover:bg-primary/90 transition-colors soft-shadow text-center"
+                >
+                  Book Your Session
+                </Link>
+
+                <Link
+                  href="/schedule"
                   className="px-8 py-3 border-2 border-primary text-white font-sans font-medium rounded-lg hover:bg-white/10 transition-colors text-center"
                 >
-                  Explore Classes
+                  Our Schedule
                 </Link>
               </motion.div>
             </motion.div>
           </div>
         </div>
       </section>
+
+      {/* Studio Location Marquee */}
+      <header className="overflow-hidden border-y border-border bg-foreground py-3 text-background">
+        <div className="relative flex overflow-hidden whitespace-nowrap">
+          <motion.div
+            className="flex shrink-0 items-center"
+            animate={{ x: ['-50%', '0%'] }}
+            transition={{
+              duration: 18,
+              repeat: Infinity,
+              ease: 'linear',
+            }}
+          >
+            <div className="flex items-center">
+              <span className="mx-4 text-[9px] font-medium uppercase tracking-[0.2em] text-primary-foreground sm:text-[10px] sm:tracking-[0.24em] lg:mx-6 lg:text-xs lg:tracking-[0.28em]">
+                2ND FLOOR, ORIENTAL HOTEL, NEW WING
+              </span>
+
+              <span className="text-primary-foreground/50">✦</span>
+
+              <span className="mx-4 text-[9px] font-medium uppercase tracking-[0.2em] text-primary-foreground sm:text-[10px] sm:tracking-[0.24em] lg:mx-6 lg:text-xs lg:tracking-[0.28em]">
+                3 LEKKI-EPE EXPY, VICTORIA ISLAND
+              </span>
+
+              <span className="text-primary-foreground/50">✦</span>
+
+              <span className="mx-4 text-[9px] font-medium uppercase tracking-[0.2em] text-primary-foreground sm:text-[10px] sm:tracking-[0.24em] lg:mx-6 lg:text-xs lg:tracking-[0.28em]">
+                LAGOS
+              </span>
+
+              <span className="text-primary-foreground/50">✦</span>
+            </div>
+          </motion.div>
+        </div>
+      </header>
+
+  
+
+
 
       {/* Classes Preview Section */}
       <section className="py-20 bg-muted/30">
@@ -116,41 +174,22 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="grid grid-cols-1 md:grid-cols-3 gap-8"
           >
-            {[
-              {
-                title: 'Reformer Basics',
-                description: 'Perfect introduction to pilates on the reformer',
-                image: '/images/stock-reformer-1.jpg',
-                icon: '🏋️',
-              },
-              {
-                title: 'Mat Pilates Flow',
-                description: 'Dynamic mat-based workout for core strength',
-                image: '/images/stock-mat-cords.jpg',
-                icon: '🧘',
-              },
-              {
-                title: 'Advanced Intensive',
-                description: 'Challenge yourself with our expert-level sessions',
-                image: '/images/stock-reformer-modern.jpg',
-                icon: '✨',
-              },
-            ].map((classItem, idx) => (
+            {classes.slice(0, 3).map((classItem) => (
               <motion.div
-                key={idx}
+                key={classItem.id}
                 variants={itemVariants}
                 className="group glassmorphism p-6 hover:shadow-xl transition-all duration-300"
               >
                 <div className="relative h-48 mb-4 rounded-lg overflow-hidden">
                   <Image
                     src={classItem.image}
-                    alt={classItem.title}
+                    alt={classItem.name}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
                 <h3 className="font-serif text-xl font-medium mb-2 text-primary">
-                  {classItem.title}
+                  {classItem.name}
                 </h3>
                 <p className="body-text text-sm text-foreground/70 mb-4">
                   {classItem.description}
@@ -180,6 +219,25 @@ export default function HomePage() {
               <ChevronRight className="w-4 h-4 ml-2" />
             </Link>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Limited Membership Promotion */}
+      <section className="bg-background py-20">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+          <div className="relative min-h-80 overflow-hidden rounded-2xl soft-shadow">
+            <Image src="/images/membership-promotion.png" alt="Pilates reformer membership session" fill className="object-cover" />
+          </div>
+          <div>
+            <p className="mb-3 text-sm uppercase tracking-[0.24em] text-accent">Limited-time offer</p>
+            <h2 className="section-title text-primary mb-4">10 Classes / Month</h2>
+            <p className="body-text mb-6 text-lg text-foreground/70">Build a consistent Pilates practice with ten studio classes each month at a limited membership price.</p>
+            <div className="mb-7 flex items-baseline gap-3">
+              <span className="font-serif text-4xl font-medium text-primary">₦150,000</span>
+              <span className="text-lg text-muted-foreground line-through">₦165,000</span>
+            </div>
+            <Link href="/memberships#monthly-10" className="inline-flex items-center rounded-lg bg-primary px-7 py-3 font-sans font-medium text-primary-foreground transition-colors hover:bg-primary/90 soft-shadow">View membership offer<ChevronRight className="ml-2 h-4 w-4" /></Link>
+          </div>
         </div>
       </section>
 
@@ -305,19 +363,23 @@ export default function HomePage() {
             <p className="body-text text-lg text-foreground/70 mb-8 max-w-2xl mx-auto">
               Join our community of pilates enthusiasts and experience the difference that expert instruction and luxury facilities can make.
             </p>
-            <BookingNowTrigger className="inline-flex items-center px-8 py-4 bg-primary text-primary-foreground font-sans font-medium rounded-lg hover:bg-primary/90 transition-colors soft-shadow text-lg">
-              <Sparkles className="w-5 h-5 mr-2" />
-              Book Your First Session
-            </BookingNowTrigger>
+<Link href="/classes" className="inline-flex items-center px-8 py-4 bg-primary text-primary-foreground font-sans font-medium rounded-lg hover:bg-primary/90 transition-colors soft-shadow text-lg">
+  <Sparkles className="w-5 h-5 mr-2" />
+  Book Your First Session
+</Link>
           </motion.div>
         </div>
       </section>
 
       <Link
-        href="/classes"
-        className="fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-background/95 px-4 py-3 text-sm font-medium text-primary shadow-lg backdrop-blur transition hover:-translate-y-0.5 hover:border-primary"
+        href="/memberships"
+        aria-label="Book the limited-time 10 classes per month offer"
+        className="fixed bottom-5 right-5 z-40 flex h-32 w-32 flex-col items-center justify-center rounded-full border-2 border-accent/60 bg-background/95 text-center text-primary shadow-xl shadow-accent/20 backdrop-blur transition duration-300 hover:-translate-y-1 hover:border-accent sm:bottom-8 sm:right-8 sm:h-40 sm:w-40"
       >
-        Explore our classes <ChevronRight className="h-4 w-4" />
+        <span className="text-2xl font-serif font-medium sm:text-3xl">₦150K</span>
+        <span className="mt-1 text-[10px] font-semibold uppercase tracking-[0.16em]">10 Classes / Month</span>
+        <span className="mt-2 text-[10px] uppercase tracking-[0.12em] text-accent">Limited-time offer</span>
+        <span className="mt-1 inline-flex items-center text-xs font-medium">Book Now <ChevronRight className="ml-1 h-3 w-3" /></span>
       </Link>
     </div>
   )

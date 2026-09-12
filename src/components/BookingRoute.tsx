@@ -8,7 +8,8 @@ import MemberBookingFlow from './MemberBookingFlow'
 export default function BookingRoute() {
   const params = useSearchParams()
   const { user, loading } = useAuth()
+  const memberFlow = params.get('member') === '1'
   if (loading) return <main className="flex min-h-[70vh] items-center justify-center text-muted-foreground">Loading your booking flow...</main>
-  if (user && params.get('classId')) return <MemberBookingFlow />
+  if (user || memberFlow) return <MemberBookingFlow />
   return <BookPage />
 }

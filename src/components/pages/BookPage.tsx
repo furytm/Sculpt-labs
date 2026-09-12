@@ -56,8 +56,8 @@ export default function BookPage() {
   const queryMembershipId =
     searchParams.get('membershipId') || ''
 
-  const classId =
-    searchParams.get('classId') || ''
+    const classId =
+  searchParams.get('classId') || ''
 
   const [step, setStep] = useState<1 | 2>(1)
 
@@ -74,8 +74,6 @@ export default function BookPage() {
 
   const [errorMessage, setErrorMessage] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
-  const [offlinePaymentReference, setOfflinePaymentReference] =
-    useState('')
 
   useEffect(() => {
     async function fetchMemberships() {
@@ -144,8 +142,8 @@ export default function BookPage() {
 
   const isContactComplete = Boolean(
     formData.name.trim() &&
-    formData.email.trim() &&
-    formData.phone.trim()
+      formData.email.trim() &&
+      formData.phone.trim()
   )
 
   const total = selectedMembership?.priceNGN || 0
@@ -160,9 +158,61 @@ export default function BookPage() {
     }))
   }
 
+const handleOfflinePayment = async () => {
+  if (!selectedMembership || !isContactComplete) {
+    return
+  }
 
+  setIsProcessing(true)
 
-  const handlePaymishPayment = async () => {
+  try {
+    const response = await createBooking({
+      fullName: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      membershipId: selectedMembership.id,
+      classId: classId || undefined,
+      paymentMethod: 'OFFLINE',
+    })
+
+    if (!response.success || !response.data?.booking) {
+      throw new Error(
+        response.message ||
+          'Unable to create your booking. Please try again.'
+      )
+    }
+
+    const booking = response.data.booking
+
+    const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+      `Hello Sculpt LAB, I have made an offline payment and would like to confirm my transfer.
+
+Name: ${formData.name}
+Email: ${formData.email}
+Phone: ${formData.phone}
+Membership: ${selectedMembership.name}
+Booking Reference: ${booking.paymentReference}
+
+Please confirm my payment.`
+    )}`
+
+    window.open(
+      whatsappLink,
+      '_blank',
+      'noopener,noreferrer'
+    )
+  } catch (error) {
+    alert(
+      error instanceof Error
+        ? error.message
+        : 'Unable to create your offline booking. Please try again.'
+    )
+  } finally {
+    setIsProcessing(false)
+  }
+}
+
+  const handleProceedToPayment = async () => {
     if (!selectedMembership || !isContactComplete) {
       return
     }
@@ -181,97 +231,29 @@ export default function BookPage() {
 
       const authorizationUrl =
         response.data?.authorizationUrl ||
-        (response.data as { authorization_url?: string } | undefined)
-          ?.authorization_url
+        (response.data as { authorization_url?: string } | undefined)?.authorization_url
 
       if (!response.success || !authorizationUrl) {
         throw new Error(
           response.message ||
-          'Payment could not be initialized. Please try again.'
+            'Payment could not be initialized. Please try again.'
         )
       }
 
-      window.location.href = authorizationUrl
+      const paymentWindow = window.open(
+        authorizationUrl,
+        '_blank',
+        'noopener,noreferrer'
+      )
+
+      if (!paymentWindow) {
+        alert('Please allow popups to continue to payment.')
+      }
     } catch (error) {
       alert(
         error instanceof Error
           ? error.message
           : 'An error occurred. Please try again.'
-      )
-    } finally {
-      setIsProcessing(false)
-    }
-  }
-
-  const handleOfflinePayment = async () => {
-    if (!selectedMembership || !isContactComplete) {
-      return
-    }
-
-    setIsProcessing(true)
-
-    try {
-      const response = await createBooking({
-        fullName: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        membershipId: selectedMembership.id,
-        classId: classId || undefined,
-        paymentMethod: 'OFFLINE',
-      })
-
-      console.log('🔥 OFFLINE BOOKING RESPONSE:', response)
-
-      if (!response.success) {
-        throw new Error(
-          response.message ||
-          'Could not create offline booking.'
-        )
-      }
-
-      const paymentReference =
-        response.data?.booking?.paymentReference
-
-      if (!paymentReference) {
-        throw new Error(
-          'Offline booking was created but no payment reference was returned.'
-        )
-      }
-
-      setOfflinePaymentReference(paymentReference)
-
-      const message = `Hello Sculpt LAB, I have made an offline payment for ${selectedMembership.name
-        }.
-
-Name: ${formData.name}
-Email: ${formData.email}
-Phone: ${formData.phone}
-Membership: ${selectedMembership.name}
-Amount: ₦${total.toLocaleString()}
-Payment Reference: ${paymentReference}
-
-I would like to confirm my transfer.`
-
-      const whatsappUrl =
-        `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-          message
-        )}`
-
-      window.open(
-        whatsappUrl,
-        '_blank',
-        'noopener,noreferrer'
-      )
-    } catch (error) {
-      console.error(
-        '🔥 OFFLINE PAYMENT ERROR:',
-        error
-      )
-
-      alert(
-        error instanceof Error
-          ? error.message
-          : 'Could not create offline booking.'
       )
     } finally {
       setIsProcessing(false)
@@ -344,10 +326,11 @@ I would like to confirm my transfer.`
                 }
               >
                 <span
-                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-serif text-lg transition ${step >= item.number
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-muted-foreground'
-                    }`}
+                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-serif text-lg transition ${
+                    step >= item.number
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted text-muted-foreground'
+                  }`}
                 >
                   {step > item.number ? (
                     <Check className="h-5 w-5" />
@@ -357,10 +340,11 @@ I would like to confirm my transfer.`
                 </span>
 
                 <span
-                  className={`hidden text-sm font-medium sm:block ${step >= item.number
-                    ? 'text-primary'
-                    : 'text-muted-foreground'
-                    }`}
+                  className={`hidden text-sm font-medium sm:block ${
+                    step >= item.number
+                      ? 'text-primary'
+                      : 'text-muted-foreground'
+                  }`}
                 >
                   {item.label}
                 </span>
@@ -368,10 +352,11 @@ I would like to confirm my transfer.`
 
               {index === 0 && (
                 <div
-                  className={`h-px flex-1 transition ${step === 2
-                    ? 'bg-primary'
-                    : 'bg-border'
-                    }`}
+                  className={`h-px flex-1 transition ${
+                    step === 2
+                      ? 'bg-primary'
+                      : 'bg-border'
+                  }`}
                 />
               )}
             </div>
@@ -434,11 +419,12 @@ I would like to confirm my transfer.`
                           membership.id
                         )
                       }
-                      className={`rounded-xl border p-5 text-left transition ${formData.membershipId ===
+                      className={`rounded-xl border p-5 text-left transition ${
+                        formData.membershipId ===
                         membership.id
-                        ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
-                        : 'border-border hover:border-primary/50'
-                        }`}
+                          ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                          : 'border-border hover:border-primary/50'
+                      }`}
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div>
@@ -478,7 +464,7 @@ I would like to confirm my transfer.`
               className="glassmorphism rounded-xl p-6 sm:p-8"
               aria-labelledby="contact-heading"
             >
-
+           
 
               <h2
                 id="contact-heading"
@@ -491,48 +477,50 @@ I would like to confirm my transfer.`
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="text-sm font-medium text-foreground/75">
                   Full name
-
-                  <input
-                    className={inputClass}
-                    value={formData.name}
-                    onChange={(event) =>
-                      updateField(
-                        'name',
-                        event.target.value
-                      )
-                    }
-                  />
+<input
+  required
+  className={inputClass}
+  value={formData.name}
+  onChange={(event) =>
+    updateField(
+      'name',
+      event.target.value
+    )
+  }
+/>
                 </label>
 
                 <label className="text-sm font-medium text-foreground/75">
                   Email
 
-                  <input
-                    type="email"
-                    className={inputClass}
-                    value={formData.email}
-                    onChange={(event) =>
-                      updateField(
-                        'email',
-                        event.target.value
-                      )
-                    }
-                  />
+                <input
+  required
+  type="email"
+  className={inputClass}
+  value={formData.email}
+  onChange={(event) =>
+    updateField(
+      'email',
+      event.target.value
+    )
+  }
+/>
                 </label>
 
                 <label className="text-sm font-medium text-foreground/75 sm:col-span-2">
                   Phone number
 
-                  <input
-                    className={inputClass}
-                    value={formData.phone}
-                    onChange={(event) =>
-                      updateField(
-                        'phone',
-                        event.target.value
-                      )
-                    }
-                  />
+               <input
+  required
+  className={inputClass}
+  value={formData.phone}
+  onChange={(event) =>
+    updateField(
+      'phone',
+      event.target.value
+    )
+  }
+/>
                 </label>
               </div>
 
@@ -571,7 +559,7 @@ I would like to confirm my transfer.`
                     !isContactComplete ||
                     isProcessing
                   }
-                  onClick={handlePaymishPayment}
+                  onClick={handleProceedToPayment}
                 >
                   {isProcessing ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -589,77 +577,49 @@ I would like to confirm my transfer.`
                 </div>
 
                 {/* MANUAL PAYMENT */}
-                <div className="mb-8 rounded-xl border border-primary/20 bg-primary/5 p-5">
-                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-primary">
-                    Pay Offline
-                  </p>
 
-                  <h3 className="mt-2 font-serif text-xl text-primary">
-                    Transfer directly to Sculpt LAB
-                  </h3>
+                  {/* BANK PAYMENT INFO */}
+              <div className="mb-8 rounded-xl border border-primary/20 bg-primary/5 p-5">
+                <p className="text-sm font-medium uppercase tracking-[0.16em] text-primary">
+                  Pay to Sculpt LAB account
+                </p>
 
-                  <p className="mt-2 text-sm leading-6 text-foreground/70">
-                    Make your transfer using the account details below, then
-                    confirm your payment with us on WhatsApp.
-                  </p>
+                <p className="mt-3 font-medium text-foreground">
+                  Sculpt LAB Limited
+                </p>
 
-                  {/* BANK DETAILS */}
-                  <div className="mt-5 rounded-lg border border-primary/20 bg-background/60 p-4">
-                    <p className="text-sm font-medium text-foreground">
-                      Sculpt LAB Limited
-                    </p>
+                <p className="text-foreground/75">
+                  Moniepoint
+                </p>
 
-                    <p className="mt-1 text-sm text-foreground/75">
-                      Moniepoint
-                    </p>
+                <p className="mt-1 text-lg font-semibold tracking-wide text-primary">
+                  3001445877
+                </p>
 
-                    <p className="mt-1 text-lg font-semibold tracking-wide text-primary">
-                      3001445877
-                    </p>
+                <p className="mt-3 text-sm leading-6 text-foreground/70">
+                  After transferring, confirm your
+                  payment with us on WhatsApp.
+                </p>
 
-                    <p className="mt-3 text-sm text-foreground/70">
-                      Amount to transfer
-                    </p>
+          <button
+  type="button"
+  onClick={handleOfflinePayment}
+  disabled={!isContactComplete || isProcessing}
+  className="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-50"
+>
+  <Image
+    src="/whatsapplogo.jpg"
+    alt="WhatsApp"
+    width={22}
+    height={22}
+    className="h-5 w-5 rounded object-cover"
+  />
 
-                    <p className="text-xl font-semibold text-primary">
-                      ₦{total.toLocaleString()}
-                    </p>
-                  </div>
-
-                  {/* PAYMENT REFERENCE */}
-                  {offlinePaymentReference ? (
-                    <p className="mt-4 rounded-lg border border-primary/20 bg-background/60 p-3 text-sm text-foreground/75">
-                      Payment reference:{' '}
-                      <strong className="text-primary">
-                        {offlinePaymentReference}
-                      </strong>
-                    </p>
-                  ) : null}
-
-                  {/* WHATSAPP BUTTON */}
-                  <button
-                    type="button"
-                    disabled={!isContactComplete || isProcessing}
-                    onClick={handleOfflinePayment}
-                    className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    {isProcessing ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Image
-                        src="/whatsapplogo.jpg"
-                        alt="WhatsApp"
-                        width={22}
-                        height={22}
-                        className="h-5 w-5 rounded object-cover"
-                      />
-                    )}
-
-                    {isProcessing
-                      ? 'Preparing WhatsApp...'
-                      : 'Confirm payment on WhatsApp'}
-                  </button>
-                </div>
+  {isProcessing
+    ? 'Creating booking...'
+    : 'Confirm your transfer on WhatsApp'}
+</button>
+              </div>
               </div>
 
               {/* NAVIGATION BUTTONS */}

@@ -7,8 +7,11 @@ import { Clock, Users, Zap } from 'lucide-react'
 import VideoHero from '../VideoHero'
 import { classes } from '@/lib/data/classes'
 import BookingNowTrigger from '../BookingNowTrigger'
+import ClassScheduleModal from '../ClassScheduleModal'
+import { useState } from 'react'
 
 export default function ClassesPage() {
+  const [selectedClassId, setSelectedClassId] = useState<string | null>(null)
   const classItems = classes.map((cls) => ({
     title: cls.name,
     duration: `${cls.duration} min`,
@@ -92,17 +95,21 @@ export default function ClassesPage() {
                       </span>
                     ))}
                   </div>
-<BookingNowTrigger
-  classId={classId}
-  className="w-full px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
->
-  Book Class
-</BookingNowTrigger>
+<div className="flex gap-2">
+  <button type="button" onClick={() => setSelectedClassId(classId)} className="rounded-lg border border-primary px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/5">Days</button>
+  <BookingNowTrigger
+    classId={classId}
+    className="flex-1 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+  >
+    Book Class
+  </BookingNowTrigger>
+</div>
                 </div>
               </motion.div>
             )
             })}
           </motion.div>
+          <ClassScheduleModal classId={selectedClassId} onClose={() => setSelectedClassId(null)} />
         </div>
       </section>
 

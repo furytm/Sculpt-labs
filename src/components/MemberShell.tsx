@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import {
   CalendarDays,
@@ -30,21 +30,18 @@ export default function MemberShell({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
+  const searchParams = useSearchParams()
 
   const router = useRouter()
   const { logout } = useAuth()
   const [open, setOpen] = useState(false)
-const isActive = (href: string) => {
-  const [path] = href.split('?')
-
-  if (pathname !== path) return false
-
-  if (!href.includes('?')) {
-    return pathname === '/dashboard'
+  const currentView = searchParams.get('view')
+  const isActive = (href: string) => {
+    const [path, query] = href.split('?')
+    if (pathname !== path) return false
+    const view = query ? new URLSearchParams(query).get('view') : null
+    return view === currentView
   }
-
-  return false
-}
 
   async function signOut() {
     await logout()

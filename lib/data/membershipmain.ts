@@ -9,6 +9,7 @@ export interface Membership {
   slug: string;
   description: string;
   price: number;
+  originalPrice?: number;
   period: string;
   classLimit: number | null;
   duration: string;

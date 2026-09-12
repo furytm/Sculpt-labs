@@ -2,6 +2,7 @@ export interface Membership {
   id: string
   name: string
   priceNGN: number // Price in Nigerian Naira
+  originalPriceNGN?: number
   period: string
   description: string
   classLimit: number | null // null = unlimited
@@ -79,7 +80,8 @@ export const memberships: Membership[] = [
   {
     id: 'monthly-10',
     name: '10 Classes/Month',
-    priceNGN: 177000,
+    priceNGN: 150000,
+    originalPriceNGN: 165000,
     period: '/month',
     description: 'Best for regular practitioners',
     classLimit: 10,

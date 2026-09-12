@@ -35,9 +35,10 @@ export default function Header() {
     { href: '/classes', label: 'Classes' },
     { href: '/memberships', label: 'Memberships' },
     { href: '/private-sessions', label: 'Private Sessions' },
+    { href: '/book', label: 'Book Now' },
     { href: '/journal', label: 'Journal' },
-    { href: '/schedule', label: 'Schedule' },
-    user ? { href: '/dashboard', label: 'Dashboard' } : { href: '/book', label: 'Book Now' },
+      { href: '/schedule', label: 'Schedule' },
+   
   ]
 
   const desktopLinkClass = 'font-sans text-sm tracking-wide text-foreground/70 hover:text-primary transition-colors relative group whitespace-nowrap'
@@ -77,16 +78,20 @@ export default function Header() {
               <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
             </button>
           ) : (
-            <Link key={link.href} href={link.href} className={link.label === 'Dashboard' ? `${desktopLinkClass} rounded-full border border-primary px-4 py-2 text-primary hover:bg-primary hover:text-primary-foreground` : desktopLinkClass}>
+            <Link key={link.href} href={link.href} className={desktopLinkClass}>
               {link.label}
               <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
             </Link>
           ))}
-          {!loading && !user && (
+          {!loading && (user ? (
+            <Link href="/dashboard" className="rounded-lg border border-primary px-4 py-2 font-sans text-sm tracking-wide text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
+              Dashboard
+            </Link>
+          ) : (
             <Link href="/login" className="rounded-lg border border-primary px-4 py-2 font-sans text-sm tracking-wide text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
               Log in
             </Link>
-          )}
+          ))}
         </nav>
       </div>
 
@@ -110,13 +115,29 @@ export default function Header() {
                 {link.label}
               </button>
             ) : (
-              <Link key={link.href} href={link.href} onClick={() => setIsMobileMenuOpen(false)} className={link.label === 'Dashboard' ? `${mobileLinkClass} rounded-full border border-primary text-primary` : mobileLinkClass}>
+              <Link key={link.href} href={link.href} onClick={() => setIsMobileMenuOpen(false)} className={mobileLinkClass}>
                 {link.label}
               </Link>
             ))}
-            {!loading && !user && (
-              <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="mt-2 rounded-lg border border-primary px-3 py-2 text-center font-sans text-sm text-primary transition-colors hover:bg-primary hover:text-primary-foreground">Log in</Link>
-            )}
+         {!loading && (
+  user ? (
+    <Link
+      href="/dashboard"
+      onClick={() => setIsMobileMenuOpen(false)}
+      className="mt-2 rounded-lg border border-primary px-3 py-2 text-center font-sans text-sm text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+    >
+      Dashboard
+    </Link>
+  ) : (
+    <Link
+      href="/login"
+      onClick={() => setIsMobileMenuOpen(false)}
+      className="mt-2 rounded-lg border border-primary px-3 py-2 text-center font-sans text-sm text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+    >
+      Log in
+    </Link>
+  )
+)}
           </nav>
         </motion.div>
       )}

@@ -25,7 +25,50 @@ export function asRecords(value: unknown): Record<string, unknown>[] { if (!Arra
 export function statusTone(value: unknown) { const status = String(value || '').toUpperCase(); return ['PAID', 'CONFIRMED', 'ACTIVE', 'COMPLETED'].includes(status) ? 'positive' : ['FAILED', 'CANCELLED', 'REJECTED'].includes(status) ? 'negative' : 'pending' }
 export function isUnavailableError(error: unknown) { return Boolean(error && typeof error === 'object' && [404, 405].includes(Number((error as { status?: number }).status))) }
 
-export async function adminRequest<T>(path: string): Promise<T> { const response = await fetch(`${API_BASE_URL}${path}`, { credentials: 'include', headers: { 'Content-Type': 'application/json' } }); const body = await response.json().catch(() => ({})); if (!response.ok) { const error = new Error(body.message || 'Unable to load this resource.') as Error & { status?: number }; error.status = response.status; throw error } return body.data ?? body }
+export async function adminRequest<T>(
+  path: string,
+  init?: RequestInit
+): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(init?.headers || {}),
+    },
+    ...init,
+  })
+
+  const body = await response.json().catch(() => ({}))
+
+  if (!response.ok) {
+    const error = new Error(
+      body.message || 'Unable to complete this request.'
+    ) as Error & { status?: number }
+
+    error.status = response.status
+    throw error
+  }
+
+  return body.data ?? body
+}
+
+export async function confirmOfflinePayment(bookingId: string) {
+  return adminRequest<unknown>(
+    `/api/admin/payments/${bookingId}/confirm`,
+    {
+      method: 'POST',
+    }
+  )
+}
+
+export async function rejectOfflinePayment(bookingId: string) {
+  return adminRequest<unknown>(
+    `/api/admin/payments/${bookingId}/reject`,
+    {
+      method: 'POST',
+    }
+  )
+}
 export async function getAdminResource<T>(path: string): Promise<AdminResource<T>> { try { const data = await adminRequest<T>(path); return { state: Array.isArray(data) && data.length === 0 ? 'empty' : 'ready', data } } catch (error) { return isUnavailableError(error) ? { state: 'unavailable', message: unavailableMessage } : { state: 'error', message: error instanceof Error ? error.message : 'Unable to load this resource.' } } }
-export function navViews(): AdminView[] { return ['dashboard', 'members', 'bookings', 'memberships', 'payments', 'health-safety'] }
+export function navViews(): AdminView[] { return ['dashboard', 'members', 'bookings', 'schedule', 'memberships', 'payments', 'health-safety'] }
 export function adminNavigation() { return navViews().map((view) => ({ view, label: adminLabels[view], href: adminRoutes[view] })) }

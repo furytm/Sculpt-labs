@@ -74,9 +74,11 @@ export default function ContactPage() {
                     Studio Location
                   </h3>
                   <p className="body-text text-sm text-foreground/70">
-                    Sculpt LAB Pilates Studio
+                   2ND FLOOR ,Oriental hotel ,New Wing
                     <br />
-                    Lagos, Nigeria
+                 3 Lekki-Epe  EXPY, Victoria Island
+                    <br />
+                   LAGOS
                   </p>
                 </div>
               </div>
@@ -97,10 +99,10 @@ export default function ContactPage() {
                     Phone
                   </h3>
                   <a
-                    href="tel:+2348086828877"
+                    href="tel:+13105551234"
                     className="body-text text-sm text-foreground/70 hover:text-primary transition-colors"
                   >
-                    0808 682 8877
+                    +234 8062085711
                   </a>
                 </div>
               </div>
@@ -121,10 +123,10 @@ export default function ContactPage() {
                     Email
                   </h3>
                   <a
-                    href="mailto:Support@scultlab.com.ng"
+                    href="mailto:enquiries@sculptlab.com.ng"
                     className="body-text text-sm text-foreground/70 hover:text-primary transition-colors"
                   >
-                    Support@scultlab.com.ng
+                    enquiries@sculptlab.com.ng
                   </a>
                 </div>
               </div>
@@ -147,7 +149,7 @@ export default function ContactPage() {
                   <div className="space-y-1 body-text text-sm text-foreground/70">
                     <p>Mon - Fri: 6:00 AM - 8:00 PM</p>
                     <p>Sat: 8:00 AM - 6:00 PM</p>
-                    <p>Sun: 9:00 AM - 5:00 PM</p>
+                 
                   </div>
                 </div>
               </div>
@@ -220,7 +222,7 @@ export default function ContactPage() {
                     value={formData.phone}
                     onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white"
-                    placeholder="(555) 000-0000"
+                    placeholder="(234) 000-0000"
                   />
                 </div>
 
@@ -268,7 +270,7 @@ export default function ContactPage() {
         </div>
 
         {/* Map Placeholder */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -277,10 +279,10 @@ export default function ContactPage() {
           <div className="text-center">
             <MapPin className="w-16 h-16 text-primary/30 mx-auto mb-4" />
             <p className="body-text text-foreground/50">
-              Sculpt LAB Pilates Studio, Lagos, Nigeria
+              123 Wellness Avenue, Los Angeles, CA 90001
             </p>
           </div>
-        </motion.div>
+        </motion.div> */}
       </div>
     </div>
   )
