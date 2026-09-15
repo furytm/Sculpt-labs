@@ -7,7 +7,6 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useAuth } from './AuthProvider'
 import { motion } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
-import BookingChoiceModal from './BookingChoiceModal'
 
 export default function Header() {
   const pathname = usePathname()
@@ -16,7 +15,6 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10)
@@ -73,10 +71,10 @@ export default function Header() {
 
         <nav className="hidden min-h-12 items-center justify-center gap-x-10 gap-y-3 pb-2 pt-0 lg:flex xl:gap-x-14" aria-label="Main navigation">
           {navLinks.map((link) => link.label === 'Book Now' ? (
-            <button key={link.href} type="button" onClick={() => setIsBookingModalOpen(true)} className={desktopLinkClass}>
+            <Link key={link.href} href="/classes" className={desktopLinkClass}>
               {link.label}
               <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
-            </button>
+            </Link>
           ) : (
             <Link key={link.href} href={link.href} className={desktopLinkClass}>
               {link.label}
@@ -103,17 +101,14 @@ export default function Header() {
         >
           <nav className="flex flex-col gap-1 px-4 py-4" aria-label="Mobile navigation">
             {navLinks.map((link) => link.label === 'Book Now' ? (
-              <button
+              <Link
                 key={link.href}
-                type="button"
+                href="/classes"
+                onClick={() => setIsMobileMenuOpen(false)}
                 className={`${mobileLinkClass} text-left`}
-                onClick={() => {
-                  setIsMobileMenuOpen(false)
-                  setIsBookingModalOpen(true)
-                }}
               >
                 {link.label}
-              </button>
+              </Link>
             ) : (
               <Link key={link.href} href={link.href} onClick={() => setIsMobileMenuOpen(false)} className={mobileLinkClass}>
                 {link.label}
@@ -142,7 +137,6 @@ export default function Header() {
         </motion.div>
       )}
 
-      <BookingChoiceModal open={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} />
     </motion.header>
   )
 }
