@@ -44,7 +44,7 @@ export default function ClassScheduleModal({ classId, onClose }: { classId: stri
         <p className="mt-3 text-sm leading-6 text-muted-foreground">{selectedClass.description}</p>
         <h3 className="mt-7 font-serif text-xl text-primary">Available days and times</h3>
         {schedules.length ? <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">{schedules.map(([day, time]) => <div key={`${day}-${time}`} className="flex items-center justify-between gap-4 rounded-lg border border-border bg-muted/30 px-3 py-3 text-sm"><p className="font-medium text-primary">{day}</p><p className="text-muted-foreground">{time}</p></div>)}</div> : <p className="mt-4 border border-border p-4 text-sm text-muted-foreground">No active schedules are available for this class.</p>}
-        <BookingNowTrigger className="mt-7 w-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90" classId={classId} onOpen={onClose}>Book Now</BookingNowTrigger>
+        <BookingNowTrigger className="mt-7 w-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90" classId={classId}>Book Now</BookingNowTrigger>
       </motion.div>
     </motion.div> : null}
   </AnimatePresence>

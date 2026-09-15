@@ -61,13 +61,18 @@ export async function confirmOfflinePayment(bookingId: string) {
   )
 }
 
-export async function rejectOfflinePayment(bookingId: string) {
+export async function rejectOfflinePayment(bookingId: string, reason?: string) {
   return adminRequest<unknown>(
     `/api/admin/payments/${bookingId}/reject`,
     {
       method: 'POST',
+      body: JSON.stringify({ reason: reason?.trim() || undefined }),
     }
   )
+}
+
+export async function deleteAdminBooking(bookingId: string) {
+  return adminRequest<unknown>(`/api/admin/bookings/${bookingId}`, { method: 'DELETE' })
 }
 export async function getAdminResource<T>(path: string): Promise<AdminResource<T>> { try { const data = await adminRequest<T>(path); return { state: Array.isArray(data) && data.length === 0 ? 'empty' : 'ready', data } } catch (error) { return isUnavailableError(error) ? { state: 'unavailable', message: unavailableMessage } : { state: 'error', message: error instanceof Error ? error.message : 'Unable to load this resource.' } } }
 export function navViews(): AdminView[] { return ['dashboard', 'members', 'bookings', 'schedule', 'memberships', 'payments', 'health-safety'] }

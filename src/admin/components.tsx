@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createContext, useContext, useState } from 'react'
-import { Activity, CalendarDays, CreditCard, LayoutDashboard, LogOut, Menu, ShieldCheck, Users, X } from 'lucide-react'
+import { Activity, CalendarDays, ChevronDown, CreditCard, LayoutDashboard, LogOut, Menu, ShieldCheck, Users, X } from 'lucide-react'
 import { useAuth } from '@/src/components/AuthProvider'
 import { adminDisplayName, initials, isAdminRole, type AdminView, adminLabels, adminRoutes } from './types'
 
