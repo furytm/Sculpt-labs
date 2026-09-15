@@ -6,8 +6,10 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 
 import { authApi } from '@/lib/api/auth'
+import { attachBookingAccount, confirmBooking } from '@/lib/api/booking'
 import { useAuth } from '@/src/components/AuthProvider'
 import { toast } from '@/hooks/use-toast'
+import SculptAuthLoading from '@/src/components/SculptAuthLoading'
 
 export default function AuthForm({
   mode,
@@ -87,12 +89,13 @@ try {
       if (mode === 'register') {
         toast({
           title: 'Account created',
-          description:
-            'Your account has been created successfully',
+          description: 'Your account has been created successfully',
         })
 
         setSuccess(
-          'Your account is ready. Check your email to verify it, then log in.'
+          reference
+            ? 'Your account is ready. Log in below to complete your paid booking.'
+            : 'Your account is ready. Check your email to verify it, then log in.'
         )
       } else {
         toast({
@@ -101,6 +104,25 @@ try {
         })
 
         await reload()
+        if (reference) {
+          let flow: { bookingId?: string; bookingFlowToken?: string; reference?: string } | null = null
+          try {
+            const stored = sessionStorage.getItem('sculpt-booking-flow')
+            flow = stored ? JSON.parse(stored) : null
+          } catch {
+            sessionStorage.removeItem('sculpt-booking-flow')
+          }
+
+          const bookingId = flow?.reference === reference ? flow.bookingId : undefined
+          const bookingFlowToken = flow?.reference === reference ? flow.bookingFlowToken : undefined
+          if (!bookingId || !bookingFlowToken) {
+            throw new Error('Your booking session has expired. Please return to the confirmation page.')
+          }
+
+          await attachBookingAccount(bookingId, { bookingFlowToken })
+          await confirmBooking(bookingId, bookingFlowToken)
+          sessionStorage.removeItem('sculpt-booking-flow')
+        }
         router.replace('/dashboard')
       }
     } catch (e) {
@@ -115,7 +137,9 @@ try {
   }
 
   return (
-    <motion.form
+    <>
+      {busy && <SculptAuthLoading />}
+      <motion.form
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       onSubmit={submit}
@@ -148,8 +172,8 @@ try {
         >
           {success}
 
-          <Link
-            href="/login"
+            <Link
+            href={`/login${reference ? `?reference=${encodeURIComponent(reference)}&email=${encodeURIComponent(email)}` : ''}`}
             className="mt-4 block font-medium text-accent hover:underline"
           >
             Continue to log in
@@ -256,6 +280,7 @@ try {
               <button
                 type="button"
                 onClick={() => {
+                  setBusy(true)
                   window.location.href = `${
                     process.env.NEXT_PUBLIC_API_URL ||
                     'https://sculpt-backend-6flc.onrender.com'
@@ -316,6 +341,7 @@ try {
           </p>
         </>
       )}
-    </motion.form>
+      </motion.form>
+    </>
   )
 }

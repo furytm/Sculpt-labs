@@ -6,6 +6,7 @@ import { PageHeading, QuickLink, SectionCard, StatCard, StateNotice, StatusBadge
 import { loadAdminDashboard } from './data'
 import { displayValue, formatAdminDate, fullName, membershipName, type AdminResource } from './types'
 import { formatTime, getAdminBookings, type AdminDashboardData, type AdminRecentBooking, type UpcomingScheduleItem } from '@/lib/api/booking'
+import { confirmOfflinePayment, deleteAdminBooking, rejectOfflinePayment } from './types'
 
 export default function AdminPage({ view }: { view: string }) {
   if (view === 'dashboard') return <Dashboard />
@@ -64,7 +65,7 @@ function Dashboard() {
         <SectionCard title="Recent bookings" action={<Link href="/admin/bookings" className="text-base text-accent hover:underline">View all</Link>}>
           {dashboard.state === 'ready'
             ? recent.length
-              ? <RecentBookingsTable bookings={recent} onDetails={booking => { closeSidebar(); setSelectedBooking(booking) }} />
+              ? <RecentBookingsTable bookings={recent} onDetails={booking => { closeSidebar(); setSelectedBooking(booking) }} onChanged={() => loadAdminDashboard().then(setDashboard)} />
               : <StateNotice state="empty" />
             : <StateNotice state={dashboard.state === 'loading' ? 'loading' : 'error'} message={dashboard.message} />}
         </SectionCard>
@@ -116,8 +117,38 @@ function groupUpcoming(items: UpcomingScheduleItem[]) {
     .filter(group => group.times.length)
 }
 
-function RecentBookingsTable({ bookings, onDetails }: { bookings: AdminRecentBooking[]; onDetails: (booking: AdminRecentBooking) => void }) {
-  const columns = ['Member', 'Membership', 'Class', 'Payment', 'Booking', 'Created', '']
+function BookingActions({ booking, onDetails, onChanged }: { booking: AdminRecentBooking; onDetails: () => void; onChanged: () => void }) {
+  const [busy, setBusy] = useState(false)
+  const [open, setOpen] = useState(false)
+  const [dialog, setDialog] = useState<'delete' | 'confirm' | 'reject' | null>(null)
+  const [reason, setReason] = useState('')
+  const paymentMethod = String((booking as { paymentMethod?: string }).paymentMethod || '').toUpperCase()
+  const paymentStatus = String(booking.paymentStatus || '').toUpperCase()
+  const offlinePending = paymentMethod === 'OFFLINE' && paymentStatus === 'PENDING'
+
+  async function runAction() {
+    setBusy(true)
+    try {
+      if (dialog === 'delete') await deleteAdminBooking(booking.id)
+      if (dialog === 'confirm') await confirmOfflinePayment(booking.id)
+      if (dialog === 'reject') await rejectOfflinePayment(booking.id, reason)
+      setDialog(null); setOpen(false); setReason(''); onChanged()
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : 'Unable to complete this action.')
+    } finally { setBusy(false) }
+  }
+
+  return <div className="relative flex justify-end gap-2 whitespace-nowrap">
+    {offlinePending && <><button type="button" disabled={busy} onClick={() => setDialog('confirm')} className="rounded-lg bg-primary px-2.5 py-1.5 text-xs text-primary-foreground disabled:opacity-50">Confirm payment</button><button type="button" disabled={busy} onClick={() => setDialog('reject')} className="rounded-lg border border-border px-2.5 py-1.5 text-xs text-foreground hover:bg-secondary disabled:opacity-50">Reject</button></>}
+    <button type="button" onClick={() => setOpen(value => !value)} aria-expanded={open} className="rounded-lg border border-border px-2.5 py-1.5 text-xs text-foreground hover:bg-secondary">Actions</button>
+    {open && <div className="absolute right-0 top-9 z-20 min-w-36 rounded-xl border border-border bg-white p-1 shadow-xl"><button type="button" onClick={() => { setOpen(false); onDetails() }} className="block w-full rounded-lg px-3 py-2 text-left text-xs hover:bg-secondary">View details</button><button type="button" onClick={() => { setOpen(false); setDialog('delete') }} className="block w-full rounded-lg px-3 py-2 text-left text-xs text-red-700 hover:bg-red-50">Delete booking</button></div>}
+    {dialog && <div className="fixed inset-0 z-[80] flex items-center justify-center bg-foreground/35 p-4" role="presentation"><section role="dialog" aria-modal="true" className="w-full max-w-md rounded-2xl bg-white p-6 text-foreground shadow-2xl"><h2 className="font-serif text-2xl text-primary">{dialog === 'delete' ? 'Delete booking?' : dialog === 'confirm' ? 'Confirm offline payment?' : 'Reject offline payment?'}</h2><p className="mt-3 text-sm leading-6 text-muted-foreground">{dialog === 'delete' ? 'This permanently removes the booking. The user account and membership will not be deleted.' : dialog === 'confirm' ? 'This confirms that the customer’s offline payment was received.' : 'Optionally provide a reason for rejecting this payment.'}</p>{dialog === 'reject' && <textarea value={reason} onChange={event => setReason(event.target.value)} className="mt-4 min-h-24 w-full rounded-xl border border-border p-3 text-sm" placeholder="Rejection reason (optional)" />}
+      <div className="mt-6 flex justify-end gap-3"><button type="button" disabled={busy} onClick={() => setDialog(null)} className="rounded-xl border border-border px-4 py-2 text-sm">Cancel</button><button type="button" disabled={busy} onClick={runAction} className="rounded-xl bg-primary px-4 py-2 text-sm text-primary-foreground disabled:opacity-50">{busy ? 'Processing…' : dialog === 'delete' ? 'Delete booking' : dialog === 'confirm' ? 'Confirm payment' : 'Reject payment'}</button></div></section></div>}
+  </div>
+}
+
+function RecentBookingsTable({ bookings, onDetails, onChanged }: { bookings: AdminRecentBooking[]; onDetails: (booking: AdminRecentBooking) => void; onChanged: () => void }) {
+  const columns = ['Member', 'Membership', 'Class', 'Payment', 'Booking', 'Created', 'Actions']
   const rows = bookings.map(booking => {
     const schedules = bookingSchedules(booking)
     return [
@@ -127,7 +158,7 @@ function RecentBookingsTable({ bookings, onDetails }: { bookings: AdminRecentBoo
       <StatusBadge value={booking.paymentStatus} />,
       <StatusBadge value={booking.bookingStatus} />,
       <span>{formatAdminDate(booking.createdAt)}</span>,
-      <button onClick={() => onDetails(booking)} className="rounded-lg px-2 py-1 text-sm text-accent hover:bg-secondary hover:underline">Details</button>,
+      <BookingActions booking={booking} onDetails={() => onDetails(booking)} onChanged={onChanged} />,
     ]
   })
   return <Table columns={columns} rows={rows} />
@@ -200,14 +231,14 @@ function BookingsPage() {
       {resource.state === 'loading' && <StateNotice state="loading" />}
       {resource.state === 'empty' && <StateNotice state="empty" />}
       {resource.state === 'error' && <StateNotice state="error" message={resource.message} />}
-      {resource.state === 'ready' && <AllBookingsTable bookings={bookings} onDetails={setSelectedBooking} />}
+      {resource.state === 'ready' && <AllBookingsTable bookings={bookings} onDetails={setSelectedBooking} onChanged={() => getAdminBookings().then(next => setResource({ state: next.length ? 'ready' : 'empty', data: next }))} />}
     </SectionCard>
     {selectedBooking && <BookingDetailsModal booking={selectedBooking} onClose={() => setSelectedBooking(null)} />}
   </>
 }
 
-function AllBookingsTable({ bookings, onDetails }: { bookings: AdminRecentBooking[]; onDetails: (booking: AdminRecentBooking) => void }) {
-  const columns = ['Member', 'Email', 'Phone', 'Membership', 'Class', 'Payment', 'Method', 'Booking', 'Start date', 'Reference', 'Created', '']
+function AllBookingsTable({ bookings, onDetails, onChanged }: { bookings: AdminRecentBooking[]; onDetails: (booking: AdminRecentBooking) => void; onChanged: () => void }) {
+  const columns = ['Member', 'Email', 'Phone', 'Membership', 'Class', 'Payment', 'Method', 'Booking', 'Start date', 'Reference', 'Created', 'Actions']
   const rows = bookings.map(booking => {
     const schedules = bookingSchedules(booking)
     return [
@@ -222,7 +253,7 @@ function AllBookingsTable({ bookings, onDetails }: { bookings: AdminRecentBookin
       <span>{formatAdminDate(booking.memberSchedules?.find(item => item.startDate)?.startDate ?? booking.bookingDate)}</span>,
       <span>{displayValue(booking.paymentReference)}</span>,
       <span>{formatAdminDate(booking.createdAt)}</span>,
-      <button onClick={() => onDetails(booking)} className="rounded-lg px-2 py-1 text-sm text-accent hover:bg-secondary hover:underline">Details</button>,
+      <BookingActions booking={booking} onDetails={() => onDetails(booking)} onChanged={onChanged} />,
     ]
   })
   return <div className="overflow-x-auto"><Table columns={columns} rows={rows} /></div>
